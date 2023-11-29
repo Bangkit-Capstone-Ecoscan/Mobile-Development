@@ -1,4 +1,4 @@
-package com.example.ecoscan.ui.screen
+package com.example.ecoscan.ui.screen.home
 
 
 import android.annotation.SuppressLint
