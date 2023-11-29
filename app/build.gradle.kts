@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.example.ecoscan"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.ecoscan"
@@ -18,7 +18,7 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-        buildConfigField("String" , "BASE_URL" , "")
+        buildConfigField("String" , "BASE_URL" , "\"Test\"")
     }
 
     buildTypes {
@@ -89,6 +89,15 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation("androidx.core:core-splashscreen:1.0.0")
+
+//  ListItem
+    implementation ("io.coil-kt:coil-compose:2.2.0")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+    implementation ("androidx.navigation:navigation-compose:2.6.0")
+    androidTestImplementation ("androidx.navigation:navigation-testing:2.6.0")
+
+    //  Material
+    implementation ("androidx.compose.material:material-icons-extended")
 
 
 }
