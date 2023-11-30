@@ -79,10 +79,14 @@ fun ProfileContent(
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Spacer(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .height(50.dp)
+            )
             Box(
                 modifier = Modifier
-                    .aspectRatio(1f)
-                    .size(80.dp) // Adjust the size as needed
+                    .size(250.dp) // Adjust the size as needed
                     .clip(CircleShape)
             ) {
                 AsyncImage(
@@ -110,7 +114,7 @@ fun ProfileContent(
                 Box(
                     modifier = Modifier
                         .background(
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
+                            MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.8f),
                             shape = CircleShape
                         )
                         .clickable { }
@@ -182,7 +186,7 @@ fun ProfileContent(
                 Box(
                     modifier = Modifier
                         .background(
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
+                            MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.8f),
                             shape = CircleShape
                         )
                         .clickable { }
