@@ -19,6 +19,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,8 +45,8 @@ import com.example.ecoscan.ui.theme.Gold
 fun ScanScreen(
 
 ) {
-    Scaffold (
-        topBar = { TopBarScan()}
+    Scaffold(
+        topBar = { TopBarScan() }
     ) {
         ScanScreenContent(image = painterResource(id = R.drawable.placeholderfood))
     }
@@ -56,7 +57,7 @@ fun ScanScreenContent(
     modifier: Modifier = Modifier,
     image: Painter,
 ) {
-    Column (
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
@@ -113,7 +114,7 @@ fun ScanScreenContent(
 
                     },
                     shape = RoundedCornerShape(20.dp),
-                    colors = ButtonDefaults.buttonColors(Gold)
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.gallery),
@@ -127,7 +128,7 @@ fun ScanScreenContent(
 
                     },
                     shape = RoundedCornerShape(20.dp),
-                    colors = ButtonDefaults.buttonColors(Gold)
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.camera),
@@ -151,7 +152,7 @@ fun ScanScreenContent(
                     modifier = Modifier
                         .width(150.dp),
                     shape = RoundedCornerShape(20.dp),
-                    colors = ButtonDefaults.buttonColors(Gold)
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
                 ) {
                     Text(
                         text = "SCAN",
