@@ -2,4 +2,7 @@
     <string name="app_name">EcoScan</string>
     <string name="title_eco">ECO</string>
     <string name="title_scan">SCAN</string>
+    <string name="foodName">Emisi Carbon : %s</string>
+    <string name="MainActivity">MainActivity</string>
+    <string name="WelcomeActivity">WelcomeActivity</string>
 </resources>

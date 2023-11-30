@@ -46,7 +46,9 @@ import com.example.ecoscan.ui.theme.EcoScanTheme
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ProfileScreen(){
-    Scaffold {
+    Scaffold (
+        topBar = { TopBarProfile() }
+    ) {
         ProfileContent(
             image = "https://imgx.sonora.id/crop/0x0:0x0/700x465/photo/2020/02/17/2398193539.png",
             username = "EcoScanUser",

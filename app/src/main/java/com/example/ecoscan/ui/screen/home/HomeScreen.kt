@@ -20,9 +20,10 @@ import com.example.ecoscan.ui.theme.EcoScanTheme
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(){
-    Scaffold {
+    Scaffold (
+        topBar = { TopBar() }
+    ) {
         ScrollContent()
-        TopBar()
     }
 }
 
