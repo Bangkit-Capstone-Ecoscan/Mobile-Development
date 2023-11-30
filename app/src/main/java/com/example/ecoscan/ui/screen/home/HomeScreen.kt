@@ -13,15 +13,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.ecoscan.ui.component.ListItems
-import com.example.ecoscan.ui.component.TopBar
+import com.example.ecoscan.ui.component.TopBarHome
 import com.example.ecoscan.ui.theme.EcoScanTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(){
     Scaffold (
-        topBar = { TopBar() }
+        topBar = { TopBarHome() }
     ) {
         ScrollContent()
     }
@@ -53,7 +53,7 @@ fun ScrollContent() {
 @Composable
 fun PreviewTopBar() {
     EcoScanTheme {
-        TopBar()
+        TopBarHome()
     }
 }
 

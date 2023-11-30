@@ -41,18 +41,19 @@ fun MainScreenHolder(
 
     Scaffold (
         bottomBar = {
-            if (currentRoute != Screen.Scan.route) {
-                BottomBar(navController = navController)
-            }
+            BottomBar(navController = navController)
+//            if (currentRoute != Screen.Scan.route) {
+//                BottomBar(navController = navController)
+//            }
         },
         floatingActionButton = {
-            if (currentRoute != Screen.Scan.route) {
+//            if (currentRoute != Screen.Scan.route) {
                 FloatingActionButton(
                     onClick = {
                         if (enabled) {
                             navController.navigate(Screen.Scan.route)
                         } else {
-                            Color.Transparent
+                            Color.Black
                         }
                     },
                     backgroundColor = Gold
@@ -63,7 +64,7 @@ fun MainScreenHolder(
                         tint = Color.White
                     )
                 }
-            }
+//            }
         },
         floatingActionButtonPosition = FabPosition.Center,
         isFloatingActionButtonDocked = true,
