@@ -152,7 +152,7 @@ fun ScanScreenContent(
                     modifier = Modifier
                         .width(150.dp),
                     shape = RoundedCornerShape(20.dp),
-                    colors = ButtonDefaults.buttonColors(Gold)
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
                 ) {
                     Text(
                         text = "SCAN",

@@ -18,6 +18,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Lock
@@ -28,18 +29,28 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
+import com.example.ecoscan.R
 import com.example.ecoscan.ui.component.TopBarProfile
 import com.example.ecoscan.ui.theme.EcoScanTheme
 
@@ -70,6 +81,9 @@ fun ProfileContent(
     modifier: Modifier = Modifier
 
 ){
+
+    var showPassword by remember { mutableStateOf(false) }
+
     Column(modifier = modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -157,29 +171,57 @@ fun ProfileContent(
                 Row(
                     modifier = Modifier
                         .padding(top = 20.dp)
-                        .fillMaxWidth(1f),
+                        .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    OutlinedTextField(
+                    androidx.compose.material.OutlinedTextField(
                         value = password,
-                        onValueChange = { newPassword -> },
+                        onValueChange = { newPasword ->
+                           ///
+                        },
                         modifier = Modifier
                             .background(
                                 color = Color.White,
-                                shape = RoundedCornerShape(20.dp)
-                            ),
+                                shape = RoundedCornerShape(20.dp),
+                            )
+                            .align(Alignment.CenterVertically)
+                            .height(50.dp),
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Lock,
                                 contentDescription = "emailIcon"
                             )
                         },
+                        visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Check,
-                                contentDescription = "checkEye"
+                            val (icon, iconColor) = if (showPassword) {
+                                Pair(
+                                    painterResource(id = R.drawable.eyepassword),
+                                    colorResource(id = R.color.black)
+                                )
+                            } else {
+                                Pair(
+                                    painterResource(id = R.drawable.eyepassword),
+                                    colorResource(id = R.color.black)
+                                )
+                            }
+                            IconButton(onClick = { showPassword = !showPassword }) {
+                                Icon(
+                                    icon,
+                                    contentDescription = "Visibility",
+                                    tint = iconColor
+                                )
+                            }
+                        },
+                        placeholder = {
+                            Text(
+                                text = "Masukan Password Anda ",
+                                fontSize = 12.sp,
+                                color = Color.Gray
                             )
-                        }
+                        },
+                        shape = RoundedCornerShape(20.dp),
+                        maxLines = 1
                     )
                 }
                 Spacer(modifier = Modifier.height(130.dp))
