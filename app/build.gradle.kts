@@ -69,6 +69,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     //Material Dependencies
+    implementation ("androidx.compose.material:material-icons-extended")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material:1.6.0-alpha08")
     implementation("androidx.compose.material3:material3:1.1.2")
@@ -76,7 +77,6 @@ dependencies {
     implementation("com.google.android.material:material:1.10.0")
 
 //    Datastore
-
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
@@ -96,8 +96,6 @@ dependencies {
     implementation ("androidx.navigation:navigation-compose:2.6.0")
     androidTestImplementation ("androidx.navigation:navigation-testing:2.6.0")
 
-    //  Material
-    implementation ("androidx.compose.material:material-icons-extended")
 
 
 }
