@@ -60,7 +60,7 @@ fun ScanScreenContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+//            .verticalScroll(rememberScrollState())
     ) {
         Spacer(
             modifier = Modifier

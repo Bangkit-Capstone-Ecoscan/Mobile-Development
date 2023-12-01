@@ -44,10 +44,11 @@ fun MainScreenHolder(
 
     Scaffold(
         bottomBar = {
+            if (currentRoute != Screen.Subscribe.route)
             BottomBar(navController = navController)
         },
         floatingActionButton = {
-
+            if (currentRoute != Screen.Subscribe.route)
             FloatingActionButton(
                 onClick = {
                     if (enabled) {
@@ -76,6 +77,7 @@ fun MainScreenHolder(
             startDestination = Screen.Home.route,
             modifier = Modifier.padding(it)
         ) {
+
             composable(Screen.Home.route) {
                 HomeScreen(
                     navigateToSubscribe = {

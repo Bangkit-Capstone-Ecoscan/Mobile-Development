@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material3.Icon
@@ -65,7 +66,6 @@ fun ProfileScreen(){
             email = "EcoScan@gmail.com",
             password = "TestPassword"
         )
-        TopBarProfile()
     }
 }
 
@@ -149,20 +149,33 @@ fun ProfileContent(
                         .fillMaxWidth(1f),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    OutlinedTextField(
+                    androidx.compose.material.OutlinedTextField(
                         value = email,
-                        onValueChange = { email -> },
+                        onValueChange = {
+                            //Do SomeThing
+                        },
                         modifier = Modifier
                             .background(
                                 color = Color.White,
                                 shape = RoundedCornerShape(20.dp)
-                            ),
+                            )
+                            .height(50.dp),
                         leadingIcon = {
                             Icon(
-                                imageVector = Icons.Default.Mail,
+                                imageVector = Icons.Default.Email,
                                 contentDescription = "emailIcon"
                             )
-                        }
+                        },
+                        placeholder = {
+                            Text(
+                                text = "Masukan Email Anda ",
+                                fontSize = 12.sp,
+                                color = Color.Gray
+                            )
+                        },
+                        shape = RoundedCornerShape(20.dp),
+                        maxLines = 1,
+                        enabled = false
                     )
                 }
 //              TextField Password
@@ -174,8 +187,8 @@ fun ProfileContent(
                 ) {
                     androidx.compose.material.OutlinedTextField(
                         value = password,
-                        onValueChange = { newPasword ->
-                           ///
+                        onValueChange = {
+                           /// Do SomeThing
                         },
                         modifier = Modifier
                             .background(
@@ -223,14 +236,16 @@ fun ProfileContent(
                         enabled = false
                     )
                 }
-                Spacer(modifier = Modifier.height(130.dp))
+                Spacer(modifier = Modifier.height(90.dp))
                 Box(
                     modifier = Modifier
                         .background(
                             MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.8f),
                             shape = CircleShape
                         )
-                        .clickable { }
+                        .clickable {
+
+                        }
                         .padding(vertical = 8.dp, horizontal = 15.dp),
                 ) {
                     Text(
