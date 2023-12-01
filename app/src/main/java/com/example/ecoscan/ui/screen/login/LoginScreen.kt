@@ -56,11 +56,11 @@ import com.example.ecoscan.ui.theme.Green
 
 @Composable
 fun LoginScreen(
-    onClickBtn: () -> Unit,
+    navigateToRegister: () -> Unit,
     navigateToHome: () -> Unit,
 ) {
     LoginScreenLayout(
-        onClickBtn =  onClickBtn ,
+        navigateToRegister =  navigateToRegister,
         navigateToHome = navigateToHome
     )
 }
@@ -68,7 +68,7 @@ fun LoginScreen(
 @Composable
 fun LoginScreenLayout(
     modifier: Modifier = Modifier,
-    onClickBtn: () -> Unit,
+    navigateToRegister: () -> Unit,
     navigateToHome: () -> Unit,
 ) {
 
@@ -316,8 +316,8 @@ fun LoginScreenLayout(
                             style = TextStyle.Default,
                             onClick = { offset ->
                                 registerText.getStringAnnotations(offset, offset)
-                                    .firstOrNull()?.let { span ->
-                                        onClickBtn()
+                                    .firstOrNull()?.let {
+                                        navigateToRegister()
                                     }
 
                             })
@@ -333,7 +333,7 @@ fun LoginScreenLayout(
 @Composable
 fun LoginScreenPreview() {
     EcoScanTheme{
-        LoginScreen(onClickBtn = { /*TODO*/ },
+        LoginScreen(navigateToRegister = { /*TODO*/ },
             navigateToHome = {}
         )
     }

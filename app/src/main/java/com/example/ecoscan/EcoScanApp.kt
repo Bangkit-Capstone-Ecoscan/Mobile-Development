@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.ecoscan.ui.theme.EcoScanTheme
+import com.example.ecoscan.view.MainScreenHolder
 import com.example.ecoscan.view.WelcomeScreenHolder
 
 class EcoScanApp : ComponentActivity() {
@@ -26,10 +27,11 @@ class EcoScanApp : ComponentActivity() {
                 ) {
                     // Kalau Mau Nampilin Splah Screen, Login Dan Register Screen
 //                    startActivity(Intent(this,WelcomeActivity::class.java))
+                    WelcomeScreenHolder()
 
 
                     // Kalau Mau Nampilih Home Scan Profile Screen Sebagai Test Sebelum Ada Api
-                    startActivity(Intent(this,MainActivity::class.java))
+//                    MainScreenHolder()
                 }
             }
         }

@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.ecoscan.R
@@ -53,7 +54,13 @@ fun BottomBar(
             NavigationBarItem(
                 selected = currentRoute == item.screen.route,
                 onClick = {
-                    navController.navigate(item.screen.route)
+                    navController.navigate(item.screen.route)  {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        restoreState = true
+                        launchSingleTop = true
+                    }
                 },
                 icon = {
                     Icon(
