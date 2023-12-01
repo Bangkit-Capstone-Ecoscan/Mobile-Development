@@ -18,9 +18,14 @@ import com.example.ecoscan.ui.theme.EcoScanTheme
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun HomeScreen(){
+fun HomeScreen(
+    navigateToSubscribe: () -> Unit,
+){
     Scaffold (
-        topBar = { TopBarHome() }
+        topBar = {
+            TopBarHome(
+            navigateToSubscribe = { navigateToSubscribe() },
+        ) }
     ) {
         ScrollContent()
     }
@@ -48,18 +53,18 @@ fun ScrollContent() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewTopBar() {
-    EcoScanTheme {
-        TopBarHome()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewTopBar() {
+//    EcoScanTheme {
+//        TopBarHome()
+//    }
+//}
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewHomeScreen() {
-    EcoScanTheme {
-        HomeScreen()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewHomeScreen() {
+//    EcoScanTheme {
+//        HomeScreen()
+//    }
+//}
