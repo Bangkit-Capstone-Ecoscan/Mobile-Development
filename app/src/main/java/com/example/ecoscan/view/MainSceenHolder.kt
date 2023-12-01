@@ -1,6 +1,7 @@
 package com.example.ecoscan.view
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.FabPosition
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
@@ -14,8 +15,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -27,6 +29,7 @@ import com.example.ecoscan.ui.navigation.Screen
 import com.example.ecoscan.ui.screen.home.HomeScreen
 import com.example.ecoscan.ui.screen.profile.ProfileScreen
 import com.example.ecoscan.ui.screen.scan.ScanScreen
+import com.example.ecoscan.ui.screen.subscribe.SubscribeScreen
 import com.example.ecoscan.ui.theme.Gold
 
 @Composable
@@ -39,32 +42,30 @@ fun MainScreenHolder(
     val currentRoute = navBackStackEntry?.destination?.route
     var enabled by remember { mutableStateOf(true) }
 
-    Scaffold (
+    Scaffold(
         bottomBar = {
             BottomBar(navController = navController)
-//            if (currentRoute != Screen.Scan.route) {
-//                BottomBar(navController = navController)
-//            }
         },
         floatingActionButton = {
-//            if (currentRoute != Screen.Scan.route) {
-                FloatingActionButton(
-                    onClick = {
-                        if (enabled) {
-                            navController.navigate(Screen.Scan.route)
-                        } else {
-                            Color.Black
-                        }
-                    },
-                    backgroundColor = Gold
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.profile_icon),
-                        contentDescription = "scan",
-                        tint = Color.White
-                    )
-                }
-//            }
+
+            FloatingActionButton(
+                onClick = {
+                    if (enabled) {
+                        navController.navigate(Screen.Scan.route)
+                    } else {
+                        Color.Black
+                    }
+                },
+                backgroundColor = Gold
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .size(25.dp),
+                    painter = painterResource(id = R.drawable.scanicon),
+                    contentDescription = "scan",
+                    tint = Color.White
+                )
+            }
         },
         floatingActionButtonPosition = FabPosition.Center,
         isFloatingActionButtonDocked = true,
@@ -76,7 +77,11 @@ fun MainScreenHolder(
             modifier = Modifier.padding(it)
         ) {
             composable(Screen.Home.route) {
-                HomeScreen()
+                HomeScreen(
+                    navigateToSubscribe = {
+                        navController.navigate(Screen.Subscribe.route)
+                    }
+                )
             }
 
             composable(Screen.Scan.route) {
@@ -85,6 +90,10 @@ fun MainScreenHolder(
 
             composable(Screen.Profile.route) {
                 ProfileScreen()
+            }
+
+            composable(Screen.Subscribe.route) {
+                SubscribeScreen()
             }
         }
     }

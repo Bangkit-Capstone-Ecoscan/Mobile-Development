@@ -17,3 +17,5 @@ val Green = Color(0xFF1E752B)
 
 val RedSubs = Color(0xFFC70039)
 val RedSignOut = Color(0xFFFF0000)
+
+val GraySubs = Color(0XFFDFDFDF)

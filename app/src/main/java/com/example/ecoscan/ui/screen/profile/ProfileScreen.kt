@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -64,7 +63,7 @@ fun ProfileScreen(){
             username = "EcoScanUser",
             subscribe = "Langganan",
             email = "EcoScan@gmail.com",
-            password = "************"
+            password = "TestPassword"
         )
         TopBarProfile()
     }
@@ -220,7 +219,8 @@ fun ProfileContent(
                             )
                         },
                         shape = RoundedCornerShape(20.dp),
-                        maxLines = 1
+                        maxLines = 1,
+                        enabled = false
                     )
                 }
                 Spacer(modifier = Modifier.height(130.dp))
