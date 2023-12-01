@@ -22,7 +22,7 @@ import com.example.ecoscan.ui.theme.Green
 
 @Composable
 fun TopBarHome(
-
+    navigateToSubscribe: () -> Unit,
 ) {
     val ecoScanText = buildAnnotatedString {
         withStyle(style = SpanStyle(MaterialTheme.colorScheme.secondary)) {
@@ -43,14 +43,14 @@ fun TopBarHome(
         },
         backgroundColor = Color.White,
         actions = {
-            IconButton(onClick = { /* do something */ }) {
+            IconButton(onClick = { navigateToSubscribe() }) {
                 Icon(
                     painter = painterResource(R.drawable.crown_solid),
                     contentDescription = "Localized description",
                     tint = Gold
                 )
             }
-            IconButton(onClick = { /* do something */ }) {
+            IconButton(onClick = {  }) {
                 Icon(
                     imageVector = Icons.Default.Settings,
                     contentDescription = "Localized description",
