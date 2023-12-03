@@ -25,7 +25,7 @@ private const val MAXIMAL_SIZE = 1000000
 private const val FILENAME_FORMAT = "yyyyMMdd_HHmmss"
 private val timeStamp: String = SimpleDateFormat(FILENAME_FORMAT, Locale.US).format(Date())
 
-fun getImageUri(context: Context): Uri {
+fun Context.getImageUri(context: Context): Uri {
     var uri: Uri? = null
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
         val contentValues = ContentValues().apply {
@@ -49,7 +49,7 @@ private fun getImageUriForPreQ(context: Context): Uri {
     if (imageFile.parentFile?.exists() == false) imageFile.parentFile?.mkdir()
     return FileProvider.getUriForFile(
         context,
-        "${BuildConfig.APPLICATION_ID}.fileprovider",
+        "${BuildConfig.APPLICATION_ID}.provider",
         imageFile
     )
 }
@@ -62,7 +62,7 @@ fun createCustomTempFile(context: Context): File {
     return File.createTempFile(timeStamp,"jpg",filesDir)
 }
 
-fun uriToFile(imageUri: Uri, context: Context): File {
+fun Context.uriToFile(imageUri: Uri, context: Context): File {
     val myFile = createCustomTempFile(context)
     val inputStream = context.contentResolver.openInputStream(imageUri) as InputStream
     val outputStream = FileOutputStream(myFile)

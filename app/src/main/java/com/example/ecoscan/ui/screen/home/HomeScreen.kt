@@ -61,10 +61,10 @@ fun ScrollContent() {
 //    }
 //}
 
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewHomeScreen() {
-//    EcoScanTheme {
-//        HomeScreen()
-//    }
-//}
+@Preview(showBackground = true)
+@Composable
+fun PreviewHomeScreen() {
+    EcoScanTheme {
+        HomeScreen(navigateToSubscribe = {})
+    }
+}

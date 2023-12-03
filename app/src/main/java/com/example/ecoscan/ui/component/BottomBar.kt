@@ -48,18 +48,20 @@ fun BottomBar(
         backgroundColor = Gold
     ) {
         navigationItems.mapIndexed { index, item ->
-            if (index == 1) {
-                Spacer(modifier = Modifier.width(130.dp))
-            }
+//            if (index == 1) {
+//                Spacer(modifier = Modifier.width(130.dp))
+//            }
             NavigationBarItem(
                 selected = currentRoute == item.screen.route,
                 onClick = {
+//                    navController.popBackStack()
                     navController.navigate(item.screen.route)  {
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
                         }
-                        restoreState = true
+//                        restoreState = true
                         launchSingleTop = true
+
                     }
                 },
                 icon = {

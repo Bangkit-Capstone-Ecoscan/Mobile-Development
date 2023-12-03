@@ -27,11 +27,11 @@ class EcoScanApp : ComponentActivity() {
                 ) {
                     // Kalau Mau Nampilin Splah Screen, Login Dan Register Screen
 //                    startActivity(Intent(this,WelcomeActivity::class.java))
-                    WelcomeScreenHolder()
+//                    WelcomeScreenHolder()
 
 
                     // Kalau Mau Nampilih Home Scan Profile Screen Sebagai Test Sebelum Ada Api
-//                    MainScreenHolder()
+                    MainScreenHolder()
                 }
             }
         }
