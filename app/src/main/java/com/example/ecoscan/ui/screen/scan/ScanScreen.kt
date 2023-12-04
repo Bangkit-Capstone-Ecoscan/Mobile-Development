@@ -1,6 +1,13 @@
 package com.example.ecoscan.ui.screen.scan
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,9 +20,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -23,22 +28,30 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import coil.compose.AsyncImage
 import com.example.ecoscan.R
+import com.example.ecoscan.data.utils.getImageUri
+import com.example.ecoscan.data.utils.uriToFile
 import com.example.ecoscan.ui.component.ResultScan
 import com.example.ecoscan.ui.component.TopBarScan
 import com.example.ecoscan.ui.theme.EcoScanTheme
-import com.example.ecoscan.ui.theme.Gold
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -48,19 +61,62 @@ fun ScanScreen(
     Scaffold(
         topBar = { TopBarScan() }
     ) {
-        ScanScreenContent(image = painterResource(id = R.drawable.placeholderfood))
+        ScanScreenContent()
     }
 }
 
 @Composable
 fun ScanScreenContent(
     modifier: Modifier = Modifier,
-    image: Painter,
 ) {
+    val context = LocalContext.current
+
+
+    var currentImageUri: Uri? = null
+
+    var capturedImageUri by remember {
+        mutableStateOf<Uri>(Uri.EMPTY)
+    }
+
+    val launcherCamera =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.TakePicture()) {
+            capturedImageUri = currentImageUri!!
+        }
+
+    val launcherGallery = rememberLauncherForActivityResult(
+        contract =  ActivityResultContracts.PickVisualMedia()
+    ) {uri: Uri? ->
+        if (uri != null) {
+            currentImageUri = uri
+            capturedImageUri = currentImageUri!!
+        } else {
+            Log.d("Photo Picker","No Media Selected")
+        }
+
+    }
+
+    fun startGallery() {
+        launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    }
+
+    fun startCamera() {
+        currentImageUri = context.getImageUri(context)
+        launcherCamera.launch(currentImageUri)
+    }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) {
+        if (it) {
+            startCamera()
+        }
+    }
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+//            .verticalScroll(rememberScrollState())
     ) {
         Spacer(
             modifier = Modifier
@@ -89,15 +145,23 @@ fun ScanScreenContent(
                     .height(200.dp)
                     .padding(start = 20.dp, end = 20.dp)
                     .clip(RoundedCornerShape(20.dp)),
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    painter = image,
-                    contentDescription = "LogoApp",
-                    contentScale = ContentScale.FillBounds
-                )
+                if (capturedImageUri.path?.isNotEmpty() == true) {
+                    AsyncImage(
+                        model = capturedImageUri,
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        contentDescription = "LogoApp",
+                        contentScale = ContentScale.Fit
+                    )
+                } else if (capturedImageUri.path?.isEmpty() == true) {
+                    Image(
+                        painter = painterResource(id = R.drawable.logoapp),
+                        contentDescription = "",
+                        contentScale = ContentScale.FillBounds)
+                }
             }
 
             /*
@@ -111,7 +175,7 @@ fun ScanScreenContent(
             ) {
                 Button(
                     onClick = {
-
+                        startGallery()
                     },
                     shape = RoundedCornerShape(20.dp),
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
@@ -125,7 +189,14 @@ fun ScanScreenContent(
 
                 Button(
                     onClick = {
-
+                        val permissionCheckResult =
+                            ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+                        if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
+                            startCamera()
+                        } else {
+                            // Request a permission
+                            permissionLauncher.launch(Manifest.permission.CAMERA)
+                        }
                     },
                     shape = RoundedCornerShape(20.dp),
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
@@ -172,12 +243,14 @@ fun ScanScreenContent(
 
         }
     }
+
 }
+
 
 @Preview(showBackground = true)
 @Composable
 fun ScanScreenPreview() {
     EcoScanTheme {
-        ScanScreenContent(image = painterResource(id = R.drawable.placeholderfood))
+        ScanScreenContent()
     }
 }
