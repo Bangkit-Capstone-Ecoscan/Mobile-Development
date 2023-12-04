@@ -20,11 +20,13 @@ import com.example.ecoscan.ui.theme.EcoScanTheme
 @Composable
 fun HomeScreen(
     navigateToSubscribe: () -> Unit,
+    navigateToSetting: () -> Unit
 ){
     Scaffold (
         topBar = {
             TopBarHome(
             navigateToSubscribe = { navigateToSubscribe() },
+                navigateToSetting = { navigateToSetting() }
         ) }
     ) {
         ScrollContent()
@@ -53,18 +55,10 @@ fun ScrollContent() {
     }
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewTopBar() {
-//    EcoScanTheme {
-//        TopBarHome()
-//    }
-//}
-
 @Preview(showBackground = true)
 @Composable
 fun PreviewHomeScreen() {
     EcoScanTheme {
-        HomeScreen(navigateToSubscribe = {})
+        HomeScreen(navigateToSubscribe = {}, navigateToSetting = {})
     }
 }

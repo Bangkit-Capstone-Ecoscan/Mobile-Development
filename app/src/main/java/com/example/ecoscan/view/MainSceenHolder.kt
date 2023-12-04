@@ -27,6 +27,7 @@ import com.example.ecoscan.ui.navigation.Screen
 import com.example.ecoscan.ui.screen.home.HomeScreen
 import com.example.ecoscan.ui.screen.profile.ProfileScreen
 import com.example.ecoscan.ui.screen.scan.ScanScreen
+import com.example.ecoscan.ui.screen.settings.SettingScreen
 import com.example.ecoscan.ui.screen.subscribe.SubscribeScreen
 import com.example.ecoscan.ui.theme.Gold
 
@@ -89,6 +90,15 @@ fun MainScreenHolder(
                             restoreState = true
                             launchSingleTop = true
                         }
+                    },
+                    navigateToSetting = {
+                        navController.navigate(Screen.Setting.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            restoreState = true
+                            launchSingleTop = true
+                        }
                     }
                 )
             }
@@ -103,6 +113,10 @@ fun MainScreenHolder(
 
             composable(Screen.Subscribe.route) {
                 SubscribeScreen()
+            }
+
+            composable(Screen.Setting.route) {
+                SettingScreen()
             }
         }
     }

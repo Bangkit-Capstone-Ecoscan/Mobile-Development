@@ -48,9 +48,9 @@ fun BottomBar(
         backgroundColor = Gold
     ) {
         navigationItems.mapIndexed { index, item ->
-//            if (index == 1) {
-//                Spacer(modifier = Modifier.width(130.dp))
-//            }
+            if (index == 1) {
+                Spacer(modifier = Modifier.width(130.dp))
+            }
             NavigationBarItem(
                 selected = currentRoute == item.screen.route,
                 onClick = {
