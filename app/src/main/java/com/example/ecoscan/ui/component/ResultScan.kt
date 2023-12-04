@@ -1,5 +1,6 @@
 package com.example.ecoscan.ui.component
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +15,7 @@ import androidx.compose.material.Text
 import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,12 +29,13 @@ fun ResultScan(
     foodName: String
 ) {
 
-    Card (
+    androidx.compose.material.Card (
         modifier = Modifier
             .fillMaxWidth(1f)
-            .height(400.dp)
+            .fillMaxHeight()
             .padding(20.dp),
-        shape = RoundedCornerShape(20.dp)
+        shape = RoundedCornerShape(20.dp),
+        border = BorderStroke(1.dp, Color.Black)
     ) {
         Column (
             modifier = Modifier
