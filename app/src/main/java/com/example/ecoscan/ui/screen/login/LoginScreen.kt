@@ -1,5 +1,6 @@
 package com.example.ecoscan.ui.screen.login
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -7,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,10 +21,13 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -33,7 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
@@ -50,6 +53,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ecoscan.R
+import com.example.ecoscan.data.pref.UserModel
+import com.example.ecoscan.di.Injection
+import com.example.ecoscan.ui.ViewModelFactory
+import com.example.ecoscan.ui.common.UiState
 import com.example.ecoscan.ui.theme.EcoScanTheme
 import com.example.ecoscan.ui.theme.Gold
 import com.example.ecoscan.ui.theme.Green
@@ -60,7 +67,7 @@ fun LoginScreen(
     navigateToHome: () -> Unit,
 ) {
     LoginScreenLayout(
-        navigateToRegister =  navigateToRegister,
+        navigateToRegister = navigateToRegister,
         navigateToHome = navigateToHome
     )
 }
@@ -68,19 +75,53 @@ fun LoginScreen(
 @Composable
 fun LoginScreenLayout(
     modifier: Modifier = Modifier,
+    context: Context = LocalContext.current,
     navigateToRegister: () -> Unit,
     navigateToHome: () -> Unit,
+    viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
+        factory = ViewModelFactory(Injection.provideRepository(context))
+    ),
 ) {
+
+    var showDialog by remember {
+        mutableStateOf(false)
+    }
+
+    val loginAccount by viewModel.loginAccount.observeAsState()
 
     var text by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var showPassword by remember { mutableStateOf(false) }
 
+
+    when (val uiState = loginAccount) {
+        is UiState.Loading -> {
+
+        }
+
+        is UiState.Success -> {
+            showDialog = true
+            viewModel.saveSession(
+                UserModel(
+                    uiState.data.user.username,
+                    uiState.data.token,
+                )
+            )
+        }
+
+        is UiState.Error -> {
+
+        }
+
+        else -> {}
+    }
+
+
     val ecoScanText = buildAnnotatedString {
-        withStyle(style = SpanStyle(Green)) {
+        withStyle(style = SpanStyle(MaterialTheme.colorScheme.primary)) {
             append("ECO")
         }
-        withStyle(style = SpanStyle(Gold)) {
+        withStyle(style = SpanStyle(MaterialTheme.colorScheme.secondary)) {
             append("SCAN")
         }
     }
@@ -116,7 +157,7 @@ fun LoginScreenLayout(
             Image(
                 /// Top Image
                 modifier = Modifier
-                    .size(360.dp,250.dp),
+                    .size(360.dp, 250.dp),
                 painter = painterResource(id = R.drawable.loginimagevector),
                 contentDescription = "loginImage",
             )
@@ -176,7 +217,7 @@ fun LoginScreenLayout(
                     }
 
                     /*
-                    Email Text Field
+                    User Name Text Field
                  */
                     Row(
                         modifier = Modifier
@@ -203,7 +244,7 @@ fun LoginScreenLayout(
                             },
                             placeholder = {
                                 Text(
-                                    text = "Masukan Email Anda ",
+                                    text = "Masukan Username Anda ",
                                     fontSize = 12.sp,
                                     color = Color.Gray
                                 )
@@ -211,6 +252,25 @@ fun LoginScreenLayout(
                             shape = RoundedCornerShape(20.dp),
                             maxLines = 1
                         )
+                    }
+
+                    if (showDialog) {
+                        androidx.compose.material.AlertDialog(
+                            onDismissRequest = {
+                                showDialog = false
+                            },
+                            title = {
+                                Text(text = "Login Berhasil")
+                            },
+                            confirmButton = {
+                                Button(
+                                    onClick = {
+
+                                }) {
+                                    Text(text = "Yes")
+                                }
+                            }
+                        ) 
                     }
 
                     /*
@@ -287,7 +347,7 @@ fun LoginScreenLayout(
                                 .fillMaxWidth(1f)
                                 .height(40.dp),
                             onClick = {
-                                navigateToHome()
+                                viewModel.login(text, password)
                             },
                             shape = RoundedCornerShape(20.dp),
                             colors = ButtonDefaults.buttonColors(Gold)
@@ -332,7 +392,7 @@ fun LoginScreenLayout(
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview() {
-    EcoScanTheme{
+    EcoScanTheme {
         LoginScreen(navigateToRegister = { /*TODO*/ },
             navigateToHome = {}
         )

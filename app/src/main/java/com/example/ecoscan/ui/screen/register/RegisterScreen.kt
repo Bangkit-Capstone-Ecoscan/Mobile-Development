@@ -1,6 +1,7 @@
 package com.example.ecoscan.ui.screen.register
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,7 +13,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.OutlinedTextField
@@ -31,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -44,25 +48,34 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ecoscan.R
+import com.example.ecoscan.di.Injection
+import com.example.ecoscan.ui.ViewModelFactory
 import com.example.ecoscan.ui.theme.EcoScanTheme
 import com.example.ecoscan.ui.theme.Gold
 import com.example.ecoscan.ui.theme.Green
+import androidx.compose.runtime.livedata.observeAsState
 
 @Composable
 fun RegisterScreen () {
-    registerScreenLayout()
+    RegisterScreenLayout()
 }
 
 
 @Composable
-fun registerScreenLayout (
-    modifier: Modifier = Modifier
+fun RegisterScreenLayout(
+    modifier: Modifier = Modifier,
+    context: Context = LocalContext.current,
+    viewModel: RegisterViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
+        factory = ViewModelFactory(Injection.provideRepository(context))
+    ),
 ) {
-    var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
-    var username by rememberSaveable {
-        mutableStateOf("")
-    }
+    var username by rememberSaveable { mutableStateOf("") }
+    var lastName by rememberSaveable { mutableStateOf("") }
+    var firstName by rememberSaveable { mutableStateOf("") }
+
+
+    val createAccount by viewModel.createAccount.observeAsState()
 
     val ecoScanText = buildAnnotatedString {
         withStyle(style = SpanStyle(Green)) {
@@ -78,6 +91,7 @@ fun registerScreenLayout (
         modifier = modifier
             .background(Color.White)
             .fillMaxHeight(1f)
+            .verticalScroll(rememberScrollState())
     ) {
         Column(
             modifier = Modifier
@@ -97,7 +111,7 @@ fun registerScreenLayout (
         Column {
             Box(
                 modifier = Modifier
-                    .fillMaxHeight(1f)
+                    .height(600.dp)
                     .fillMaxWidth(1f),
             ) {
                 Image(                          //Image Background Left
@@ -173,7 +187,7 @@ fun registerScreenLayout (
                                 )
                             },
                             placeholder = { Text(
-                                text = "Masukan nama anda ",
+                                text = "Masukan username anda ",
                                 color = Color.Gray,
                                 fontSize = 12.sp
                             )
@@ -184,7 +198,7 @@ fun registerScreenLayout (
                     }
 
                     /*
-                        Email Text Field
+                        FirstName Text Field
                      */
                     Row(
                         modifier = Modifier
@@ -193,9 +207,9 @@ fun registerScreenLayout (
                         horizontalArrangement = Arrangement.Center
                     ) {
                         OutlinedTextField(
-                            value = email,
-                            onValueChange = { newEmail ->
-                                email = newEmail
+                            value = lastName,
+                            onValueChange = { newLastName ->
+                                lastName = newLastName
                             },
                             modifier = Modifier
                                 .background(
@@ -210,7 +224,44 @@ fun registerScreenLayout (
                                 )
                             },
                             placeholder = { Text(
-                                text = "Masukan email anda ",
+                                text = "Masukan Last Name anda ",
+                                color = Color.Gray,
+                                fontSize = 12.sp
+                            )
+                            },
+                            shape = RoundedCornerShape(20.dp),
+                            maxLines = 1
+                        )
+                    }
+
+                    /*
+                        FirstName Text Field
+                     */
+                    Row(
+                        modifier = Modifier
+                            .padding(top = 20.dp)
+                            .fillMaxWidth(1f),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        OutlinedTextField(
+                            value = firstName,
+                            onValueChange = { newFirstName ->
+                                firstName = newFirstName
+                            },
+                            modifier = Modifier
+                                .background(
+                                    color = Color.White,
+                                    shape = RoundedCornerShape(20.dp)
+                                )
+                                .height(50.dp),
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Email,
+                                    contentDescription = "emailIcon"
+                                )
+                            },
+                            placeholder = { Text(
+                                text = "Masukan FirstName anda ",
                                 color = Color.Gray,
                                 fontSize = 12.sp
                             )
@@ -279,9 +330,7 @@ fun registerScreenLayout (
                             modifier = Modifier
                                 .fillMaxWidth(1f),
                             onClick = {
-                                /*
-                                    Do Something
-                                 */
+                                viewModel.registerUser(username,firstName, lastName, password)
                             },
                             shape = RoundedCornerShape(20.dp),
                             colors = ButtonDefaults.buttonColors(Gold)
@@ -305,6 +354,6 @@ fun registerScreenLayout (
 @Composable
 fun layoutPreview () {
     EcoScanTheme {
-        registerScreenLayout()
+        RegisterScreenLayout()
     }
 }

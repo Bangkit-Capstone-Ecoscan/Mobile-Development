@@ -1,6 +1,8 @@
 package com.example.ecoscan.ui.screen.profile
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -48,8 +51,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.ecoscan.R
+import com.example.ecoscan.ui.ViewModelFactory
 import com.example.ecoscan.ui.component.TopBarProfile
 import com.example.ecoscan.ui.theme.EcoScanTheme
 
@@ -76,10 +82,14 @@ fun ProfileContent(
     subscribe: String,
     email: String,
     password: String,
-    modifier: Modifier = Modifier
-
+    modifier: Modifier = Modifier,
+    navController: NavHostController = rememberNavController(),
+    context: Context = LocalContext.current,
+    viewModel: ProfileViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
+        factory = ViewModelFactory.getInstance(context)
+    ),
 ){
-
+    val activity = context as? Activity
     var showPassword by remember { mutableStateOf(false) }
 
     Column(modifier = modifier.fillMaxSize()) {
@@ -244,7 +254,8 @@ fun ProfileContent(
                             shape = CircleShape
                         )
                         .clickable {
-
+                            viewModel.logoutSession()
+                            activity?.finish()
                         }
                         .padding(vertical = 8.dp, horizontal = 15.dp),
                 ) {

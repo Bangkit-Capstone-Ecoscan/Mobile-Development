@@ -18,7 +18,7 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-        buildConfigField("String" , "BASE_URL" , "\"Test\"")
+        buildConfigField("String" , "BASE_URL" , "\"https://ecoscan-api.vercel.app\"")
     }
 
     buildTypes {
@@ -70,6 +70,13 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    // compose LiveData Dependencies
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation("androidx.compose.runtime:runtime:1.5.4")
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
+    implementation("androidx.compose.runtime:runtime-rxjava2:1.5.4")
+
     //Material Dependencies
     implementation ("androidx.compose.material:material-icons-extended")
     implementation("androidx.compose.material3:material3")
@@ -80,7 +87,6 @@ dependencies {
 
 //    Datastore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
     implementation("androidx.activity:activity-ktx:1.7.2")
     implementation("com.github.bumptech.glide:glide:4.16.0")
@@ -98,6 +104,9 @@ dependencies {
     implementation ("androidx.navigation:navigation-compose:2.6.0")
     androidTestImplementation ("androidx.navigation:navigation-testing:2.6.0")
 
+    // Coroutine Kotlin Dependencies
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
+    //
 
 }
