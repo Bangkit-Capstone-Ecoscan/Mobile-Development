@@ -1,6 +1,8 @@
 package com.example.ecoscan.ui.screen.profile
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,10 +23,8 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -50,13 +51,14 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.example.ecoscan.R
+import com.example.ecoscan.ui.ViewModelFactory
 import com.example.ecoscan.ui.component.TopBarProfile
 import com.example.ecoscan.ui.theme.EcoScanTheme
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ProfileScreen(){
-    Scaffold (
+fun ProfileScreen() {
+    Scaffold(
         topBar = { TopBarProfile() }
     ) {
         ProfileContent(
@@ -76,10 +78,13 @@ fun ProfileContent(
     subscribe: String,
     email: String,
     password: String,
-    modifier: Modifier = Modifier
-
-){
-
+    modifier: Modifier = Modifier,
+    context: Context = LocalContext.current,
+    viewModel: ProfileViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
+        factory = ViewModelFactory.getInstance(context)
+    ),
+) {
+    val context = LocalContext.current as? Activity
     var showPassword by remember { mutableStateOf(false) }
 
     Column(modifier = modifier.fillMaxSize()) {
@@ -114,7 +119,7 @@ fun ProfileContent(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(12.dp),
 
-            ) {
+                ) {
                 Text(
                     text = username,
                     textAlign = TextAlign.Center,
@@ -139,7 +144,7 @@ fun ProfileContent(
                             fontWeight = FontWeight.ExtraBold,
                             color = MaterialTheme.colorScheme.onPrimary
                         ),
-                        modifier = Modifier.padding(vertical = 0.dp,horizontal = 10.dp)
+                        modifier = Modifier.padding(vertical = 0.dp, horizontal = 10.dp)
                     )
                 }
 //              TextField Email
@@ -188,7 +193,7 @@ fun ProfileContent(
                     androidx.compose.material.OutlinedTextField(
                         value = password,
                         onValueChange = {
-                           /// Do SomeThing
+                            /// Do SomeThing
                         },
                         modifier = Modifier
                             .background(
@@ -244,7 +249,9 @@ fun ProfileContent(
                             shape = CircleShape
                         )
                         .clickable {
-
+                            viewModel.logoutSession()
+                            context?.isDestroyed
+                            context?.finish()
                         }
                         .padding(vertical = 8.dp, horizontal = 15.dp),
                 ) {
@@ -255,7 +262,7 @@ fun ProfileContent(
                             fontWeight = FontWeight.ExtraBold,
                             color = MaterialTheme.colorScheme.onPrimary
                         ),
-                        modifier = Modifier.padding(vertical = 0.dp,horizontal = 14.dp)
+                        modifier = Modifier.padding(vertical = 0.dp, horizontal = 14.dp)
                     )
                 }
             }

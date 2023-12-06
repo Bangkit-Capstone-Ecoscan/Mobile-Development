@@ -11,7 +11,7 @@ import com.example.ecoscan.ui.theme.EcoScanTheme
 
 @Composable
 fun SwitchMinimal() {
-    var checked by remember { mutableStateOf(true) }
+    var checked by remember { mutableStateOf(false) }
 
     Switch(
         checked = checked,

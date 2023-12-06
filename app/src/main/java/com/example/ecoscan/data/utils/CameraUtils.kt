@@ -81,12 +81,12 @@ fun File.reduceFileImage(): File {
     var streamLength: Int
     do {
         val bmpStream = ByteArrayOutputStream()
-        bitmap?.compress(Bitmap.CompressFormat.JPEG, compresQuality, bmpStream)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, compresQuality, bmpStream)
         val bmpPicByteArray = bmpStream.toByteArray()
         streamLength = bmpPicByteArray.size
         compresQuality -= 5
     } while (streamLength > MAXIMAL_SIZE)
-    bitmap?.compress(Bitmap.CompressFormat.JPEG, compresQuality,FileOutputStream(file))
+    bitmap.compress(Bitmap.CompressFormat.JPEG, compresQuality,FileOutputStream(file))
     return file
 }
 

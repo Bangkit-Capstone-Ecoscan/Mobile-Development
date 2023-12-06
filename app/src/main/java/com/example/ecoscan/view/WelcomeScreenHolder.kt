@@ -42,7 +42,11 @@ fun WelcomeScreenHolder(
         }
 
         composable(Screen.Register.route) {
-            RegisterScreen()
+            RegisterScreen(
+                navigateToLogin = {
+                    navController.navigate(Screen.Login.route)
+                }
+            )
         }
     }
 }
