@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.ecoscan.EcoScanViewModel
 import com.example.ecoscan.data.repository.EcoRepository
 import com.example.ecoscan.di.Injection
+import com.example.ecoscan.ui.screen.detail.DetailViewModel
 import com.example.ecoscan.ui.screen.login.LoginViewModel
 import com.example.ecoscan.ui.screen.profile.ProfileViewModel
 import com.example.ecoscan.ui.screen.register.RegisterViewModel
@@ -25,6 +26,9 @@ class ViewModelFactory (private val repository: EcoRepository): ViewModelProvide
             }
             modelClass.isAssignableFrom(ProfileViewModel::class.java) -> {
                 ProfileViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(DetailViewModel::class.java) -> {
+                DetailViewModel(repository) as T
             }
             else -> {
                 throw IllegalArgumentException("Unknown ViewModel Class " + modelClass.name)

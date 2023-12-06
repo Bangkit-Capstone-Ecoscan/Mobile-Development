@@ -53,7 +53,7 @@ import com.example.ecoscan.ui.ViewModelFactory
 import com.example.ecoscan.ui.theme.EcoScanTheme
 import com.example.ecoscan.ui.theme.Gold
 import com.example.ecoscan.ui.theme.Green
-import androidx.compose.runtime.livedata.observeAsState
+//import androidx.compose.runtime.livedata.observeAsState
 
 @Composable
 fun RegisterScreen () {
@@ -75,7 +75,7 @@ fun RegisterScreenLayout(
     var firstName by rememberSaveable { mutableStateOf("") }
 
 
-    val createAccount by viewModel.createAccount.observeAsState()
+//    val createAccount by viewModel.createAccount.observeAsState()
 
     val ecoScanText = buildAnnotatedString {
         withStyle(style = SpanStyle(Green)) {
