@@ -23,10 +23,8 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -51,8 +49,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.ecoscan.R
 import com.example.ecoscan.ui.ViewModelFactory
@@ -61,8 +57,8 @@ import com.example.ecoscan.ui.theme.EcoScanTheme
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ProfileScreen(){
-    Scaffold (
+fun ProfileScreen() {
+    Scaffold(
         topBar = { TopBarProfile() }
     ) {
         ProfileContent(
@@ -83,13 +79,12 @@ fun ProfileContent(
     email: String,
     password: String,
     modifier: Modifier = Modifier,
-    navController: NavHostController = rememberNavController(),
     context: Context = LocalContext.current,
     viewModel: ProfileViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
         factory = ViewModelFactory.getInstance(context)
     ),
-){
-    val activity = context as? Activity
+) {
+    val context = LocalContext.current as? Activity
     var showPassword by remember { mutableStateOf(false) }
 
     Column(modifier = modifier.fillMaxSize()) {
@@ -124,7 +119,7 @@ fun ProfileContent(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(12.dp),
 
-            ) {
+                ) {
                 Text(
                     text = username,
                     textAlign = TextAlign.Center,
@@ -149,7 +144,7 @@ fun ProfileContent(
                             fontWeight = FontWeight.ExtraBold,
                             color = MaterialTheme.colorScheme.onPrimary
                         ),
-                        modifier = Modifier.padding(vertical = 0.dp,horizontal = 10.dp)
+                        modifier = Modifier.padding(vertical = 0.dp, horizontal = 10.dp)
                     )
                 }
 //              TextField Email
@@ -198,7 +193,7 @@ fun ProfileContent(
                     androidx.compose.material.OutlinedTextField(
                         value = password,
                         onValueChange = {
-                           /// Do SomeThing
+                            /// Do SomeThing
                         },
                         modifier = Modifier
                             .background(
@@ -255,7 +250,8 @@ fun ProfileContent(
                         )
                         .clickable {
                             viewModel.logoutSession()
-                            activity?.finish()
+                            context?.isDestroyed
+                            context?.finish()
                         }
                         .padding(vertical = 8.dp, horizontal = 15.dp),
                 ) {
@@ -266,7 +262,7 @@ fun ProfileContent(
                             fontWeight = FontWeight.ExtraBold,
                             color = MaterialTheme.colorScheme.onPrimary
                         ),
-                        modifier = Modifier.padding(vertical = 0.dp,horizontal = 14.dp)
+                        modifier = Modifier.padding(vertical = 0.dp, horizontal = 14.dp)
                     )
                 }
             }

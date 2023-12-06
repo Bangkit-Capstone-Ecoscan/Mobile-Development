@@ -1,6 +1,7 @@
 package com.example.ecoscan.ui.screen.login
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,14 +15,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -59,7 +62,6 @@ import com.example.ecoscan.ui.ViewModelFactory
 import com.example.ecoscan.ui.common.UiState
 import com.example.ecoscan.ui.theme.EcoScanTheme
 import com.example.ecoscan.ui.theme.Gold
-import com.example.ecoscan.ui.theme.Green
 
 @Composable
 fun LoginScreen(
@@ -87,16 +89,24 @@ fun LoginScreenLayout(
         mutableStateOf(false)
     }
 
+    var showLoading by remember {
+        mutableStateOf(false)
+    }
+
+    var enabledButton by remember {
+        mutableStateOf(false)
+    }
+
     val loginAccount by viewModel.loginAccount.observeAsState()
 
-    var text by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
+    var text by remember{ mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
     var showPassword by remember { mutableStateOf(false) }
 
 
     when (val uiState = loginAccount) {
         is UiState.Loading -> {
-
+            showLoading = true
         }
 
         is UiState.Success -> {
@@ -110,7 +120,8 @@ fun LoginScreenLayout(
         }
 
         is UiState.Error -> {
-
+            showLoading = false
+            Toast.makeText(context, "UserName Atau Password Anda Salah", Toast.LENGTH_SHORT).show()
         }
 
         else -> {}
@@ -255,22 +266,34 @@ fun LoginScreenLayout(
                     }
 
                     if (showDialog) {
-                        androidx.compose.material.AlertDialog(
+                        androidx.compose.material3.AlertDialog(
                             onDismissRequest = {
                                 showDialog = false
                             },
                             title = {
                                 Text(text = "Login Berhasil")
                             },
+                            text = {
+                                Text(text = "Silahkan Ke Halaman Selanjutnya")
+                            },
+                            icon = { Icon(imageVector = Icons.Default.CheckCircle, contentDescription = "checkCircle")},
                             confirmButton = {
                                 Button(
                                     onClick = {
-
-                                }) {
-                                    Text(text = "Yes")
+                                        navigateToHome()
+                                    },
+                                    shape = RoundedCornerShape(20.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        MaterialTheme.colorScheme.primary
+                                    )
+                                    ) {
+                                    Text(
+                                        text = "Yes",
+                                        color = Color.Black
+                                    )
                                 }
                             }
-                        ) 
+                        )
                     }
 
                     /*
@@ -286,6 +309,9 @@ fun LoginScreenLayout(
                             value = password,
                             onValueChange = { newPasword ->
                                 password = newPasword
+                                if (password.length >=  8) {
+                                    enabledButton = true
+                                }
                             },
                             modifier = Modifier
                                 .background(
@@ -350,14 +376,22 @@ fun LoginScreenLayout(
                                 viewModel.login(text, password)
                             },
                             shape = RoundedCornerShape(20.dp),
-                            colors = ButtonDefaults.buttonColors(Gold)
+                            colors = ButtonDefaults.buttonColors(Gold),
+                            enabled = enabledButton,
                         ) {
-                            Text(
-                                text = "Sign In",
-                                color = Color.White,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 20.sp,
-                            )
+                            if (showLoading) {
+                                androidx.compose.material.CircularProgressIndicator(
+                                    modifier = Modifier.size(24.dp),
+                                    color = Color.Gray
+                                )
+                            } else {
+                                Text(
+                                    text = "Sign In",
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 20.sp,
+                                )
+                            }
                         }
                     }
 

@@ -4,8 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.material.Surface
-import androidx.compose.material3.MaterialTheme
 import com.example.ecoscan.ui.ViewModelFactory
 import com.example.ecoscan.ui.theme.EcoScanTheme
 import com.example.ecoscan.view.MainScreenHolder
@@ -20,22 +18,20 @@ class EcoScanApp : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.getSession().observe(this) {user ->
+        viewModel.getSession().observe(this) { user ->
             if (!user.isLogin) {
                 setContent {
-                    Surface {
-                        MaterialTheme.colorScheme.background
-                    }
-                    WelcomeScreenHolder()
-                }
-            } else {
-                setContent {
                     EcoScanTheme {
-                        MainScreenHolder()
+                        WelcomeScreenHolder()
                     }
                 }
             }
         }
+            setContent {
+                EcoScanTheme {
+                    MainScreenHolder()
+                }
+            }
 
     }
 }

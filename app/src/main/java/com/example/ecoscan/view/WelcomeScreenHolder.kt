@@ -35,14 +35,18 @@ fun WelcomeScreenHolder(
                              navController.navigate(Screen.Register.route)
                 },
                 navigateToHome = {
-//                    context.startActivity(Intent(context, MainActivity::class.java))
-//                    (context as? ComponentActivity)?.finish()
+                    context.startActivity(Intent(context, MainActivity::class.java))
+                    (context as? ComponentActivity)?.finish()
                 }
             )
         }
 
         composable(Screen.Register.route) {
-            RegisterScreen()
+            RegisterScreen(
+                navigateToLogin = {
+                    navController.navigate(Screen.Login.route)
+                }
+            )
         }
     }
 }

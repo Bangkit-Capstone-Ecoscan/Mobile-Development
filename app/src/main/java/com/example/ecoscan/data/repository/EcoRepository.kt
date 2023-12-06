@@ -36,12 +36,7 @@ class EcoRepository private constructor(
             try {
                 val successResponse = apiService.register(userName, firstName, lastName, password)
                 emit(UiState.Success(successResponse))
-            } catch (e: HttpException) {
-                val errorBody = e.response()?.errorBody().toString()
-                val erroResponse = Gson()?.fromJson(errorBody, AuthResponse::class.java)
-                emit(UiState.Error(erroResponse.toString()))
-            }
-            catch (e: Exception) {
+            } catch (e: Exception) {
                 emit(UiState.Error("Error: ${e.message.toString()}"))
             }
         }
@@ -52,12 +47,7 @@ class EcoRepository private constructor(
         try {
             val successResponse = apiService.login(userName,password)
             emit(UiState.Success(successResponse))
-        } catch (e:HttpException) {
-            val errorBody  = e.response()?.errorBody().toString()
-            val errorResponse = Gson()?.fromJson(errorBody, AuthResponse::class.java)
-            emit(UiState.Error(errorResponse.toString()))
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             emit(UiState.Error("Error : ${e.message.toString()}"))
         }
     }
