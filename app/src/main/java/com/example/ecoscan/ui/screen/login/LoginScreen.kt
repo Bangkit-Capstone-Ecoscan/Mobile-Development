@@ -1,5 +1,7 @@
 package com.example.ecoscan.ui.screen.login
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -7,24 +9,28 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -33,7 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
@@ -50,9 +56,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ecoscan.R
+import com.example.ecoscan.data.pref.UserModel
+import com.example.ecoscan.di.Injection
+import com.example.ecoscan.ui.ViewModelFactory
+import com.example.ecoscan.ui.common.UiState
 import com.example.ecoscan.ui.theme.EcoScanTheme
 import com.example.ecoscan.ui.theme.Gold
-import com.example.ecoscan.ui.theme.Green
 
 @Composable
 fun LoginScreen(
@@ -60,7 +69,7 @@ fun LoginScreen(
     navigateToHome: () -> Unit,
 ) {
     LoginScreenLayout(
-        navigateToRegister =  navigateToRegister,
+        navigateToRegister = navigateToRegister,
         navigateToHome = navigateToHome
     )
 }
@@ -68,19 +77,62 @@ fun LoginScreen(
 @Composable
 fun LoginScreenLayout(
     modifier: Modifier = Modifier,
+    context: Context = LocalContext.current,
     navigateToRegister: () -> Unit,
     navigateToHome: () -> Unit,
+    viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
+        factory = ViewModelFactory(Injection.provideRepository(context))
+    ),
 ) {
 
-    var text by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
+    var showDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var showLoading by remember {
+        mutableStateOf(false)
+    }
+
+    var enabledButton by remember {
+        mutableStateOf(false)
+    }
+
+    val loginAccount by viewModel.loginAccount.observeAsState()
+
+    var text by remember{ mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
     var showPassword by remember { mutableStateOf(false) }
 
+
+    when (val uiState = loginAccount) {
+        is UiState.Loading -> {
+            showLoading = true
+        }
+
+        is UiState.Success -> {
+            showDialog = true
+            viewModel.saveSession(
+                UserModel(
+                    uiState.data.user.username,
+                    uiState.data.token,
+                )
+            )
+        }
+
+        is UiState.Error -> {
+            showLoading = false
+            Toast.makeText(context, "UserName Atau Password Anda Salah", Toast.LENGTH_SHORT).show()
+        }
+
+        else -> {}
+    }
+
+
     val ecoScanText = buildAnnotatedString {
-        withStyle(style = SpanStyle(Green)) {
+        withStyle(style = SpanStyle(MaterialTheme.colorScheme.primary)) {
             append("ECO")
         }
-        withStyle(style = SpanStyle(Gold)) {
+        withStyle(style = SpanStyle(MaterialTheme.colorScheme.secondary)) {
             append("SCAN")
         }
     }
@@ -116,7 +168,7 @@ fun LoginScreenLayout(
             Image(
                 /// Top Image
                 modifier = Modifier
-                    .size(360.dp,250.dp),
+                    .size(360.dp, 250.dp),
                 painter = painterResource(id = R.drawable.loginimagevector),
                 contentDescription = "loginImage",
             )
@@ -176,7 +228,7 @@ fun LoginScreenLayout(
                     }
 
                     /*
-                    Email Text Field
+                    User Name Text Field
                  */
                     Row(
                         modifier = Modifier
@@ -203,13 +255,44 @@ fun LoginScreenLayout(
                             },
                             placeholder = {
                                 Text(
-                                    text = "Masukan Email Anda ",
+                                    text = "Masukan Username Anda ",
                                     fontSize = 12.sp,
                                     color = Color.Gray
                                 )
                             },
                             shape = RoundedCornerShape(20.dp),
                             maxLines = 1
+                        )
+                    }
+
+                    if (showDialog) {
+                        androidx.compose.material3.AlertDialog(
+                            onDismissRequest = {
+                                showDialog = false
+                            },
+                            title = {
+                                Text(text = "Login Berhasil")
+                            },
+                            text = {
+                                Text(text = "Silahkan Ke Halaman Selanjutnya")
+                            },
+                            icon = { Icon(imageVector = Icons.Default.CheckCircle, contentDescription = "checkCircle")},
+                            confirmButton = {
+                                Button(
+                                    onClick = {
+                                        navigateToHome()
+                                    },
+                                    shape = RoundedCornerShape(20.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        MaterialTheme.colorScheme.primary
+                                    )
+                                    ) {
+                                    Text(
+                                        text = "Yes",
+                                        color = Color.Black
+                                    )
+                                }
+                            }
                         )
                     }
 
@@ -226,6 +309,9 @@ fun LoginScreenLayout(
                             value = password,
                             onValueChange = { newPasword ->
                                 password = newPasword
+                                if (password.length >=  8) {
+                                    enabledButton = true
+                                }
                             },
                             modifier = Modifier
                                 .background(
@@ -287,17 +373,25 @@ fun LoginScreenLayout(
                                 .fillMaxWidth(1f)
                                 .height(40.dp),
                             onClick = {
-                                navigateToHome()
+                                viewModel.login(text, password)
                             },
                             shape = RoundedCornerShape(20.dp),
-                            colors = ButtonDefaults.buttonColors(Gold)
+                            colors = ButtonDefaults.buttonColors(Gold),
+                            enabled = enabledButton,
                         ) {
-                            Text(
-                                text = "Sign In",
-                                color = Color.White,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 20.sp,
-                            )
+                            if (showLoading) {
+                                androidx.compose.material.CircularProgressIndicator(
+                                    modifier = Modifier.size(24.dp),
+                                    color = Color.Gray
+                                )
+                            } else {
+                                Text(
+                                    text = "Sign In",
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 20.sp,
+                                )
+                            }
                         }
                     }
 
@@ -332,7 +426,7 @@ fun LoginScreenLayout(
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview() {
-    EcoScanTheme{
+    EcoScanTheme {
         LoginScreen(navigateToRegister = { /*TODO*/ },
             navigateToHome = {}
         )

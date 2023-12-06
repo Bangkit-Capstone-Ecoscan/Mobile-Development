@@ -18,16 +18,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.ecoscan.R
 import com.example.ecoscan.ui.navigation.Screen
+import com.example.ecoscan.ui.theme.EcoScanTheme
 import kotlinx.coroutines.delay
 
 
 @Composable
 fun SplashScreen(
-    navController: NavHostController,
+    navController: NavHostController
 ) {
 
     val scale = remember {
@@ -47,7 +51,13 @@ fun SplashScreen(
         )
         // Customize the delay time
         delay(2000)
-        navController.navigate(Screen.Login.route)
+        navController.popBackStack()
+        navController.navigate(Screen.Login.route) {
+            popUpTo(navController.graph.findStartDestination().id) {
+                saveState = true
+            }
+        }
+
     }
 
     Column(
@@ -63,7 +73,7 @@ fun SplashScreen(
         ) {
             Image(
                 modifier = Modifier
-                    .size(270.dp),
+                    .size(300.dp),
                 painter = painterResource(id = R.drawable.logoapp),
                 contentDescription = "LogoApp",
             )
