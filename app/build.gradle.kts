@@ -97,6 +97,7 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation("androidx.core:core-splashscreen:1.0.0")
+    implementation ("com.google.code.gson:gson:2.10.1")
 
 //  ListItem
     implementation ("io.coil-kt:coil-compose:2.2.0")

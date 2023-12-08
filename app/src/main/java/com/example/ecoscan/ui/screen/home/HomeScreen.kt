@@ -69,8 +69,7 @@ fun HomeScreen(
                     Log.d("HomeScreen", "${uiState.data}")
 
                     ScrollContent(
-                        article = uiState.data.articleResponse,
-                        modifier = modifier,
+                        article = uiState.data
                     )
                 }
 
@@ -101,7 +100,7 @@ fun ScrollContent(
         items(article) { data ->
             ListItems(
                 titleArticle = data.title,
-                descArticle = data.desc.joinToString("\n"),
+                descArticle = data.desc.joinToString("\n")?: "",
                 photoUrl = data.imgUrl,
                 author = data.author,
                 year = data.authorYear,

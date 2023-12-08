@@ -1,8 +1,10 @@
 package com.example.ecoscan.data.repository
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import com.example.ecoscan.data.pref.UserModel
 import com.example.ecoscan.data.pref.UserPreference
+import com.example.ecoscan.data.remote.response.ArticleResponseItem
 import com.example.ecoscan.data.remote.retrofit.ApiService
 import com.example.ecoscan.ui.common.UiState
 import kotlinx.coroutines.flow.Flow
@@ -50,7 +52,7 @@ class EcoRepository private constructor(
     }
 
     // Function To List Article
-    suspend fun getAllArticle() = liveData{
+    suspend fun getAllArticle(): LiveData<UiState<List<ArticleResponseItem>>> = liveData{
         try {
             emit(UiState.Loading)
             val successResponse = apiService.getAllArticle()
