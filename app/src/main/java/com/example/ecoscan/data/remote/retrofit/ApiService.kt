@@ -1,9 +1,11 @@
 package com.example.ecoscan.data.remote.retrofit
 
 
+import com.example.ecoscan.data.remote.response.ArticleResponse
 import com.example.ecoscan.data.remote.response.AuthResponse
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface ApiService {
@@ -24,5 +26,8 @@ interface ApiService {
         @Field("username") username: String,
         @Field("password") password: String,
     ): AuthResponse
+
+    @GET("article")
+    suspend fun getAllArticle(): ArticleResponse
 
 }
