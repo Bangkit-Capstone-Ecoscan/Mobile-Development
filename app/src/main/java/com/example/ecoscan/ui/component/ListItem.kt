@@ -28,7 +28,7 @@ fun ListItems(
     titleArticle: String,
     descArticle: String,
     photoUrl: String,
-    author: String,
+    author: String?,
     year: String,
     modifier: Modifier = Modifier
 ) {
@@ -67,10 +67,12 @@ fun ListItems(
                     overflow = TextOverflow.Ellipsis
                 )
                 Row {
-                    Text(
-                        text = author,
-                        style = MaterialTheme.typography.titleSmall
-                    )
+                    if (author != null) {
+                        Text(
+                            text = author,
+                            style = MaterialTheme.typography.titleSmall
+                        )
+                    }
                     Text(
                         text = " | ",
                         style = MaterialTheme.typography.titleSmall
