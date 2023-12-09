@@ -73,7 +73,6 @@ class EcoRepository private constructor(
         }catch (e: Exception) {
             emit(UiState.Error("Error : ${e.message.toString()}"))
         }
-
     }
     companion object {
         fun getInstance(

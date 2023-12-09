@@ -22,8 +22,8 @@ class DetailViewModel(private val repository: EcoRepository) : ViewModel() {
                 repository.getDetailArticle(title).asFlow().collect {
                     _getDetailArticle.value = it
                 }
-            } catch (e: Exception) {
-                _getDetailArticle.value = UiState.Error("Error: ${e.message}")
+            } finally {
+
             }
         }
     }

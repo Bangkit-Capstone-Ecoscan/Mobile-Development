@@ -80,7 +80,7 @@ fun DetailScreen(
             when (uiState) {
                 is UiState.Loading -> {
                     showLoading = true
-                    Log.d("DetailScreen", "Loading state detected $titleArticle")
+                    Log.d("DetailScreen", "Loading state detected")
                     viewModel.getDetailArticle(titleArticle)
                 }
 
