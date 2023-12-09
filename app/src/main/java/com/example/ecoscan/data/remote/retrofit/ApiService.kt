@@ -4,6 +4,7 @@ package com.example.ecoscan.data.remote.retrofit
 import com.example.ecoscan.data.remote.response.ArticleResponse
 import com.example.ecoscan.data.remote.response.ArticleResponseItem
 import com.example.ecoscan.data.remote.response.AuthResponse
+import com.example.ecoscan.data.remote.response.DetailResponseItem
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -30,5 +31,8 @@ interface ApiService {
 
     @GET("/article")
     suspend fun getAllArticle(): List<ArticleResponseItem>
+
+    @GET("/article/detail")
+    suspend fun getDetailArticle(title: String): List<DetailResponseItem>
 
 }

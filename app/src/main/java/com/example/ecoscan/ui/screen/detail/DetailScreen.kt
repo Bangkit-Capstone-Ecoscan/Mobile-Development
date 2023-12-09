@@ -1,8 +1,11 @@
 package com.example.ecoscan.ui.screen.detail
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
@@ -21,6 +24,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,26 +44,75 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.example.ecoscan.R
+import com.example.ecoscan.di.Injection
+import com.example.ecoscan.ui.ViewModelFactory
+import com.example.ecoscan.ui.common.UiState
 import com.example.ecoscan.ui.component.TopBarScan
+import com.example.ecoscan.ui.screen.home.HomeViewModel
+import com.example.ecoscan.ui.screen.home.ScrollContent
 import com.example.ecoscan.ui.theme.EcoScanTheme
 import com.example.ecoscan.ui.theme.Gold
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun DetailScreen() {
+fun DetailScreen(
+    titleArticle: String,
+    context: Context = LocalContext.current,
+    viewModel: DetailViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
+        factory = ViewModelFactory(Injection.provideRepository(context))
+    ),
+
+) {
+
+    var showDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var showLoading by remember {
+        mutableStateOf(false)
+    }
     Scaffold(
         topBar = {
             TopBarScan()
         }
     ) {
-        DetailContent(
-            titleArticle = "Kurangi Emisi Karbon dengan Konsumsi Bijak Selama Ramadan",
-            descArticle = stringResource(id = R.string.stringDesc),
-            photoUrl = "https://imgx.sonora.id/crop/0x0:0x0/700x465/photo/2020/02/17/2398193539.png",
-            author = "Arif",
-            year = "2024"
-        )
+        viewModel.getDetailArticle.observeAsState(initial = UiState.Loading).value.let { uiState ->
+            when (uiState) {
+                is UiState.Loading -> {
+                    showLoading = true
+                    Log.d("DetailScreen", "Loading state detected")
+                    viewModel.getDetailArticle(titleArticle)
+                }
 
+                is UiState.Success -> {
+                    showDialog = true
+                    Log.d("DetailScreen", "Success state detected")
+                    Log.d("DetailScreen", "${uiState.data}")
+                    val articleList = uiState.data
+                    if (articleList.isNotEmpty()){
+                        val article = articleList[0]
+                        DetailContent(
+                            titleArticle = article.data.title,
+                            descArticle = article.data.desc.joinToString("\n"),
+                            photoUrl = article.data.imgUrl,
+                            author = article.data.author,
+                            year = article.data.authorYear
+                        )
+                    }
+
+                }
+
+                is UiState.Error -> {
+                    showLoading = false
+                    Log.e("DetailScreen", "Error state detected: ${uiState.errorMessage}")
+                    Toast.makeText(context, "An error occurred", Toast.LENGTH_SHORT).show()
+                }
+
+                else -> {
+                    Log.d("DetailScreen", "Unhandled state detected")
+                }
+            }
+        }
     }
 }
 
@@ -71,10 +128,13 @@ fun DetailContent(
 
     val openUrlLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
-    ) {  }
+    ) { }
 
     val openUrl: () -> Unit = {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.dw.com/id/kurangi-emisi-karbon-dengan-konsumsi-bijak-selama-ramadan/a-61393961"))
+        val intent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse("https://www.dw.com/id/kurangi-emisi-karbon-dengan-konsumsi-bijak-selama-ramadan/a-61393961")
+        )
         openUrlLauncher.launch(intent)
     }
 
@@ -105,7 +165,7 @@ fun DetailContent(
                     .align(Alignment.CenterHorizontally)
             )
 
-            Box{
+            Box {
                 Text(
                     text = descArticle,
                     modifier = modifier
@@ -141,6 +201,6 @@ fun DetailContent(
 @Composable
 fun PreviewHomeScreen() {
     EcoScanTheme {
-        DetailScreen()
+        DetailScreen("Hello")
     }
 }

@@ -17,5 +17,9 @@ sealed class Screen (val route: String) {
 
     object Setting: Screen("setting")
 
+    object Detail: Screen("Detail/{title}"){
+        fun createRoute(title: String) = "Detail/$title"
+    }
+
 
 }

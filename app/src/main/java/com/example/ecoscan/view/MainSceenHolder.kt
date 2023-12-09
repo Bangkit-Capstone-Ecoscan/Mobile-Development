@@ -24,6 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.ecoscan.R
 import com.example.ecoscan.ui.component.BottomBar
 import com.example.ecoscan.ui.navigation.Screen
+import com.example.ecoscan.ui.screen.detail.DetailScreen
 import com.example.ecoscan.ui.screen.home.HomeScreen
 import com.example.ecoscan.ui.screen.profile.ProfileScreen
 import com.example.ecoscan.ui.screen.scan.ScanScreen
@@ -99,6 +100,15 @@ fun MainScreenHolder(
                             restoreState = true
                             launchSingleTop = true
                         }
+                    },
+                    navigateToDetail = { title->
+                        navController.navigate(Screen.Detail.createRoute(title)){
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            restoreState = true
+                            launchSingleTop = true
+                        }
                     }
                 )
             }
@@ -117,6 +127,11 @@ fun MainScreenHolder(
 
             composable(Screen.Setting.route) {
                 SettingScreen()
+            }
+
+            composable(Screen.Detail.route){itNv->
+                val title = itNv.arguments?.getString("title") ?: ""
+                DetailScreen(titleArticle = title)
             }
         }
     }

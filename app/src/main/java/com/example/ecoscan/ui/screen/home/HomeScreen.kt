@@ -38,7 +38,8 @@ fun HomeScreen(
         factory = ViewModelFactory(Injection.provideRepository(context))
     ),
     navigateToSubscribe: () -> Unit,
-    navigateToSetting: () -> Unit
+    navigateToSetting: () -> Unit,
+    navigateToDetail: (String) -> Unit,
 ){
     var showDialog by remember {
         mutableStateOf(false)
@@ -69,7 +70,8 @@ fun HomeScreen(
                     Log.d("HomeScreen", "${uiState.data}")
 
                     ScrollContent(
-                        article = uiState.data
+                        article = uiState.data,
+                        navigateToDetail = navigateToDetail
                     )
                 }
 
@@ -90,6 +92,8 @@ fun HomeScreen(
 fun ScrollContent(
     article:List<ArticleResponseItem>,
     modifier: Modifier = Modifier,
+    navigateToDetail: (String) -> Unit,
+
     ) {
 
     LazyColumn(
@@ -104,7 +108,9 @@ fun ScrollContent(
                 photoUrl = data.imgUrl,
                 author = data.author,
                 year = data.authorYear,
-                modifier = Modifier.clickable {}
+                modifier = Modifier.clickable {
+                    navigateToDetail(data.title)
+                }
             )
         }
     }
@@ -114,6 +120,6 @@ fun ScrollContent(
 @Composable
 fun PreviewHomeScreen() {
     EcoScanTheme {
-        HomeScreen(navigateToSubscribe = {}, navigateToSetting = {})
+        HomeScreen(navigateToSubscribe = {}, navigateToSetting = {}, navigateToDetail = {})
     }
 }
