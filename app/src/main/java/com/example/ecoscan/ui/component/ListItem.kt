@@ -56,8 +56,10 @@ fun ListItems(
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.titleSmall.copy(
                         fontWeight = FontWeight.ExtraBold
+                    ),
+                    maxLines = 1,
+
                     )
-                )
                 Text(
                     text = descArticle,
                     modifier = Modifier

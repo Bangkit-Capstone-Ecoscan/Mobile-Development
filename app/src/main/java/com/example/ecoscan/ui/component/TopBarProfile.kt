@@ -29,10 +29,10 @@ fun TopBarProfile(
 
 ) {
     val ecoScanText = buildAnnotatedString {
-        withStyle(style = SpanStyle(MaterialTheme.colorScheme.secondary)) {
+        withStyle(style = SpanStyle(Green)) {
             append(stringResource(id = R.string.title_eco))
         }
-        withStyle(style = SpanStyle(MaterialTheme.colorScheme.primary)) {
+        withStyle(style = SpanStyle(Gold)) {
             append(stringResource(id = R.string.title_scan))
         }
     }

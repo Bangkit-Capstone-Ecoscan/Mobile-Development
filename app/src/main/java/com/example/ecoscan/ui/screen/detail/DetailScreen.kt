@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -47,6 +48,7 @@ import com.example.ecoscan.R
 import com.example.ecoscan.di.Injection
 import com.example.ecoscan.ui.ViewModelFactory
 import com.example.ecoscan.ui.common.UiState
+import com.example.ecoscan.ui.component.TopBarProfile
 import com.example.ecoscan.ui.component.TopBarScan
 import com.example.ecoscan.ui.screen.home.HomeViewModel
 import com.example.ecoscan.ui.screen.home.ScrollContent
@@ -62,7 +64,7 @@ fun DetailScreen(
         factory = ViewModelFactory(Injection.provideRepository(context))
     ),
 
-) {
+    ) {
 
     var showDialog by remember {
         mutableStateOf(false)
@@ -92,10 +94,11 @@ fun DetailScreen(
                     val detailResponse = uiState.data
                     DetailContent(
                         titleArticle = detailResponse.data.title,
-                        descArticle = detailResponse.data.desc.joinToString("\n"),
+                        descArticle = detailResponse.data.desc,
                         photoUrl = detailResponse.data.imgUrl,
                         author = detailResponse.data.author,
-                        year = detailResponse.data.authorYear
+                        year = detailResponse.data.authorYear,
+                        linkUrl = detailResponse.data.articleUrl
                     )
 
                 }
@@ -117,24 +120,14 @@ fun DetailScreen(
 @Composable
 fun DetailContent(
     titleArticle: String,
-    descArticle: String,
+    descArticle: List<String>,
     photoUrl: String,
-    author: String,
-    year: String,
-    modifier: Modifier = Modifier
+    author: String?,
+    year: String?,
+    linkUrl: String,
+    modifier: Modifier = Modifier,
+    context: Context = LocalContext.current,
 ) {
-
-    val openUrlLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
-    ) { }
-
-    val openUrl: () -> Unit = {
-        val intent = Intent(
-            Intent.ACTION_VIEW,
-            Uri.parse("https://www.dw.com/id/kurangi-emisi-karbon-dengan-konsumsi-bijak-selama-ramadan/a-61393961")
-        )
-        openUrlLauncher.launch(intent)
-    }
 
     Row(modifier = modifier) {
         Column(
@@ -151,6 +144,7 @@ fun DetailContent(
                     .height(300.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .fillMaxWidth()
+                    .border(2.dp, Color.Gray, shape = RoundedCornerShape(16.dp))
             )
 
             Text(
@@ -161,35 +155,39 @@ fun DetailContent(
                 ),
                 modifier = modifier
                     .align(Alignment.CenterHorizontally)
+                    .padding(vertical = 8.dp)
             )
 
-            Box {
-                Text(
-                    text = descArticle,
-                    modifier = modifier
-                        .padding(top = 8.dp)
-                )
-                // Button at the bottom
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp)
-                        .zIndex(1f)
-                        .align(Alignment.Center), // Align the button at the center horizontally
-                    onClick = { openUrl },
-                    shape = RoundedCornerShape(20.dp),
-                    colors = ButtonDefaults.buttonColors(Gold)
-                ) {
-                    Text(
-                        text = "Selengkapnya",
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp,
-                    )
-                }
-            }
+            Text(
+                text = descArticle.joinToString("\n"),
+                modifier = modifier
+                    .padding(top = 8.dp)
+            )
 
+            // Button at the bottom
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
+                    .zIndex(1f)
+                    .align(Alignment.CenterHorizontally), // Align the button at the center horizontally
+                onClick = {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(linkUrl))
+                    context.startActivity(intent)
+                },
+                shape = RoundedCornerShape(20.dp),
+                colors = ButtonDefaults.buttonColors(Gold)
+            ) {
+                Text(
+                    text = "Selengkapnya",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                )
+            }
         }
+
+
 
     }
 
@@ -199,6 +197,18 @@ fun DetailContent(
 @Composable
 fun PreviewHomeScreen() {
     EcoScanTheme {
-        DetailScreen("Hello")
+        DetailContent(
+            titleArticle = "Emisi Karbon: Penyebab, Dampak dan Cara Mengurangi",
+            descArticle = listOf(
+                "\"Apa pengertian dari misi karbon atau carbon emission? Emisi berkaitan dengan proses perpindahan suatu zat atau benda. Umumnya kata emisi digunakan untuk emisi panas, emisi cahaya, maupun emisi karbon. Berdasarkan penjelasan di atas, pengertian emisi karbon atau carbon emission adalah gas yang dikeluarkan dari hasil pembakaran segala senyawa yang mengandung karbon seperti CO2, solar, bensin, LPG, serta bahan bakar lainnya. Fenomena emisi karbon merupakan proses pelepasan karbon ke lapisan atmosfer bumi.\",\n" +
+                        "                \"Saat ini, emisi karbon menjadi salah satu penyumbang terjadinya perubahan iklim dan pemanasan bersamaan dengan emisi gas rumah kaca. Keduanya menyebabkan naiknya suhu bumi atau efek rumah kaca. Untuk menghitung besaran emisi yang dihasilkan, perlu dilakukan pengukuran jejak karbon (carbon footprint). Jejak karbon adalah jumlah emisi CO2 dan zat-zat rumah kaca yang berhubungan dengan segala jenis aktivitas seseorang ataupun entitas lain seperti bangunan, sebuah perusahaan, negara, dan lainnya. Satuan yang digunakan untuk menghitung kuantitas emisi karbon dihitung dengan satuan ton ekuivalen karbon dioksida (CO2).\",\n" +
+                        "                \"Contohnya, Budi yang menggunakan kendaraan pribadi berupa sepeda motor di Jakarta menghasilkan jejak karbon sejumlah 4,82 kg CO2 setiap harinya.\""
+            ),
+            photoUrl = "https://lindungihutan.com/blog/wp-content/uploads/2022/03/Emisi-Karbon-Lengkap-Cover-Image-Blog-LindungiHutan.png",
+            author = "LindungiHutan",
+            year = "2022",
+            linkUrl = "https://lindungihutan.com/blog/emisi-karbon/"
+
+        )
     }
 }
