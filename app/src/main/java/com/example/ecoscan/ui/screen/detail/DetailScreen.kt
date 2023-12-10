@@ -8,13 +8,18 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -54,6 +59,7 @@ import com.example.ecoscan.ui.screen.home.HomeViewModel
 import com.example.ecoscan.ui.screen.home.ScrollContent
 import com.example.ecoscan.ui.theme.EcoScanTheme
 import com.example.ecoscan.ui.theme.Gold
+import com.example.ecoscan.ui.theme.GraySubs
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -123,12 +129,11 @@ fun DetailContent(
     descArticle: List<String>,
     photoUrl: String,
     author: String?,
-    year: String?,
+    year: String,
     linkUrl: String,
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
 ) {
-
     Row(modifier = modifier) {
         Column(
             modifier = Modifier
@@ -146,7 +151,26 @@ fun DetailContent(
                     .fillMaxWidth()
                     .border(2.dp, Color.Gray, shape = RoundedCornerShape(16.dp))
             )
-
+            Row(
+                modifier = Modifier
+                    .padding(vertical = 8.dp)
+            ) {
+                if (author != null) {
+                    Text(
+                        text = author,
+                        style = MaterialTheme.typography.titleSmall
+                    )
+                }
+                Text(
+                    text = " | ",
+                    style = MaterialTheme.typography.titleSmall
+                )
+                Spacer(modifier = Modifier.width(5.dp))
+                Text(
+                    text = year,
+                    style = MaterialTheme.typography.titleSmall
+                )
+            }
             Text(
                 text = titleArticle,
                 textAlign = TextAlign.Center,
@@ -186,7 +210,6 @@ fun DetailContent(
                 )
             }
         }
-
 
 
     }
