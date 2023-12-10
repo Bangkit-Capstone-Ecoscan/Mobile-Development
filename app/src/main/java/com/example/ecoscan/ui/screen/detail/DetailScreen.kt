@@ -56,7 +56,7 @@ import com.example.ecoscan.ui.theme.Gold
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun DetailScreen(
-    titleArticle: String,
+    id: String,
     context: Context = LocalContext.current,
     viewModel: DetailViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
         factory = ViewModelFactory(Injection.provideRepository(context))
@@ -80,25 +80,23 @@ fun DetailScreen(
             when (uiState) {
                 is UiState.Loading -> {
                     showLoading = true
-                    Log.d("DetailScreen", "Loading state detected")
-                    viewModel.getDetailArticle(titleArticle)
+                    Log.d("DetailScreen", "Loading state detected $id")
+                    viewModel.getDetailArticle(id)
+
                 }
 
                 is UiState.Success -> {
                     showDialog = true
                     Log.d("DetailScreen", "Success state detected")
                     Log.d("DetailScreen", "${uiState.data}")
-                    val articleList = uiState.data
-                    if (articleList.isNotEmpty()){
-                        val article = articleList[0]
-                        DetailContent(
-                            titleArticle = article.data.title,
-                            descArticle = article.data.desc.joinToString("\n"),
-                            photoUrl = article.data.imgUrl,
-                            author = article.data.author,
-                            year = article.data.authorYear
-                        )
-                    }
+                    val detailResponse = uiState.data
+                    DetailContent(
+                        titleArticle = detailResponse.data.title,
+                        descArticle = detailResponse.data.desc.joinToString("\n"),
+                        photoUrl = detailResponse.data.imgUrl,
+                        author = detailResponse.data.author,
+                        year = detailResponse.data.authorYear
+                    )
 
                 }
 

@@ -102,16 +102,18 @@ fun ScrollContent(
         contentPadding = PaddingValues(vertical = 60.dp, horizontal = 0.dp),
     ) {
         items(article) { data ->
-            ListItems(
-                titleArticle = data.title,
-                descArticle = data.desc.joinToString("\n")?: "",
-                photoUrl = data.imgUrl,
-                author = data.author,
-                year = data.authorYear,
-                modifier = Modifier.clickable {
-                    navigateToDetail(data.title)
-                }
-            )
+            data.data.apply {
+                ListItems(
+                    titleArticle = title,
+                    descArticle = desc.joinToString("\n")?: "",
+                    photoUrl = imgUrl,
+                    author = author,
+                    year = authorYear,
+                    modifier = Modifier.clickable {
+                        navigateToDetail(data.id)
+                    }
+                )
+            }
         }
     }
 }

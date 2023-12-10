@@ -101,8 +101,8 @@ fun MainScreenHolder(
                             launchSingleTop = true
                         }
                     },
-                    navigateToDetail = { title->
-                        navController.navigate(Screen.Detail.createRoute(title)){
+                    navigateToDetail = { id->
+                        navController.navigate(Screen.Detail.createRoute(id)){
                             popUpTo(navController.graph.findStartDestination().id) {
                                 saveState = true
                             }
@@ -130,8 +130,8 @@ fun MainScreenHolder(
             }
 
             composable(Screen.Detail.route){itNv->
-                val title = itNv.arguments?.getString("title") ?: ""
-                DetailScreen(titleArticle = title)
+                val id = itNv.arguments?.getString("id") ?: ""
+                DetailScreen(id = id)
             }
         }
     }

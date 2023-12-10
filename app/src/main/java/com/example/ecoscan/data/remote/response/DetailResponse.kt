@@ -4,12 +4,6 @@ import com.google.gson.annotations.SerializedName
 
 data class DetailResponse(
 
-	@field:SerializedName("DetailResponse")
-	val detailResponse: List<DetailResponseItem>
-)
-
-data class DetailResponseItem(
-
 	@field:SerializedName("data")
 	val data: Data,
 

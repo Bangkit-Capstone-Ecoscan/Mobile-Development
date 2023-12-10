@@ -10,6 +10,15 @@ data class ArticleResponse(
 
 data class ArticleResponseItem(
 
+	@field:SerializedName("data")
+	val data: DataArticle,
+
+	@field:SerializedName("id")
+	val id: String
+)
+
+data class DataArticle(
+
 	@field:SerializedName("imgUrl")
 	val imgUrl: String,
 

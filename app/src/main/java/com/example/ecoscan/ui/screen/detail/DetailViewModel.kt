@@ -5,21 +5,19 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
-import com.example.ecoscan.data.pref.UserModel
-import com.example.ecoscan.data.remote.response.ArticleResponseItem
-import com.example.ecoscan.data.remote.response.DetailResponseItem
+import com.example.ecoscan.data.remote.response.DetailResponse
 import com.example.ecoscan.data.repository.EcoRepository
 import com.example.ecoscan.ui.common.UiState
 import kotlinx.coroutines.launch
 
 class DetailViewModel(private val repository: EcoRepository) : ViewModel() {
 
-    private val _getDetailArticle = MutableLiveData<UiState<List<DetailResponseItem>>>()
-    val getDetailArticle: LiveData<UiState<List<DetailResponseItem>>> get() = _getDetailArticle
-    fun getDetailArticle(title: String) {
+    private val _getDetailArticle = MutableLiveData<UiState<DetailResponse>>()
+    val getDetailArticle: LiveData<UiState<DetailResponse>> get() = _getDetailArticle
+    fun getDetailArticle(id: String) {
         viewModelScope.launch {
             try {
-                repository.getDetailArticle(title).asFlow().collect {
+                repository.getDetailArticle(id).asFlow().collect {
                     _getDetailArticle.value = it
                 }
             } finally {

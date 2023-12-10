@@ -5,7 +5,7 @@ import androidx.lifecycle.liveData
 import com.example.ecoscan.data.pref.UserModel
 import com.example.ecoscan.data.pref.UserPreference
 import com.example.ecoscan.data.remote.response.ArticleResponseItem
-import com.example.ecoscan.data.remote.response.DetailResponseItem
+import com.example.ecoscan.data.remote.response.DetailResponse
 import com.example.ecoscan.data.remote.retrofit.ApiService
 import com.example.ecoscan.ui.common.UiState
 import kotlinx.coroutines.flow.Flow
@@ -65,10 +65,10 @@ class EcoRepository private constructor(
     }
 
     // Function To Detail Article
-    suspend fun getDetailArticle(title: String): LiveData<UiState<List<DetailResponseItem>>> = liveData{
+    suspend fun getDetailArticle(id: String): LiveData<UiState<DetailResponse>> = liveData{
         try {
             emit(UiState.Loading)
-            val successResponse = apiService.getDetailArticle(title)
+            val successResponse = apiService.getDetailArticle(id)
             emit(UiState.Success(successResponse))
         }catch (e: Exception) {
             emit(UiState.Error("Error : ${e.message.toString()}"))
