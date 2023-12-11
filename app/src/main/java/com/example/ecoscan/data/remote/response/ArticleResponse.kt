@@ -4,26 +4,19 @@ import com.google.gson.annotations.SerializedName
 
 data class ArticleResponse(
 
-	@field:SerializedName("ArticlesResponse")
-	val articlesResponse: List<ArticleResponseItem>
+	@field:SerializedName("Response")
+	val response: List<ArticleResponseItem>
 )
-
 data class ArticleResponseItem(
-
-	@field:SerializedName("data")
-	val data: DataArticle,
-
-	@field:SerializedName("id")
-	val id: String
-)
-
-data class DataArticle(
 
 	@field:SerializedName("imgUrl")
 	val imgUrl: String,
 
 	@field:SerializedName("author")
 	val author: String,
+
+	@field:SerializedName("id")
+	val id: String,
 
 	@field:SerializedName("author-year")
 	val authorYear: String,

@@ -97,14 +97,14 @@ fun DetailScreen(
                     showDialog = true
                     Log.d("DetailScreen", "Success state detected")
                     Log.d("DetailScreen", "${uiState.data}")
-                    val detailResponse = uiState.data
+                    val data = uiState.data
                     DetailContent(
-                        titleArticle = detailResponse.data.title,
-                        descArticle = detailResponse.data.desc,
-                        photoUrl = detailResponse.data.imgUrl,
-                        author = detailResponse.data.author,
-                        year = detailResponse.data.authorYear,
-                        linkUrl = detailResponse.data.articleUrl
+                        titleArticle = data.title,
+                        descArticle = data.desc,
+                        photoUrl = data.imgUrl,
+                        author = data.author,
+                        year = data.authorYear,
+                        linkUrl = data.articleUrl
                     )
 
                 }

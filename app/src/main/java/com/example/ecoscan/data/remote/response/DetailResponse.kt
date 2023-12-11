@@ -4,20 +4,14 @@ import com.google.gson.annotations.SerializedName
 
 data class DetailResponse(
 
-	@field:SerializedName("data")
-	val data: Data,
-
-	@field:SerializedName("id")
-	val id: String
-)
-
-data class Data(
-
 	@field:SerializedName("imgUrl")
 	val imgUrl: String,
 
 	@field:SerializedName("author")
 	val author: String,
+
+	@field:SerializedName("id")
+	val id: String,
 
 	@field:SerializedName("title")
 	val title: String,
@@ -31,3 +25,4 @@ data class Data(
 	@field:SerializedName("desc")
 	val desc: List<String>
 )
+

@@ -61,7 +61,7 @@ fun HomeScreen(
             when(uiState){
                 is UiState.Loading -> {
                     showLoading = true
-                    Log.d("HomeScreen", "Loading state detected")
+                    Log.d("HomeScreen", "Loading state detected ")
                     viewModel.getAllArticle()
                 }
                 is UiState.Success -> {
@@ -102,7 +102,8 @@ fun ScrollContent(
         contentPadding = PaddingValues(vertical = 60.dp, horizontal = 0.dp),
     ) {
         items(article) { data ->
-            data.data.apply {
+            data.apply {
+                Log.d("HomeScreen","Data ${data.articleUrl}")
                 ListItems(
                     titleArticle = title,
                     descArticle = desc.joinToString("\n")?: "",
