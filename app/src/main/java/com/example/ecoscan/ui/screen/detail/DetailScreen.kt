@@ -185,7 +185,8 @@ fun DetailContent(
             Text(
                 text = descArticle.joinToString("\n"),
                 modifier = modifier
-                    .padding(top = 8.dp)
+                    .padding(top = 8.dp),
+                textAlign = TextAlign.Justify
             )
 
             // Button at the bottom

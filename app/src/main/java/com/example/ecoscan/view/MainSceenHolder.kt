@@ -24,6 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.ecoscan.R
 import com.example.ecoscan.ui.component.BottomBar
 import com.example.ecoscan.ui.navigation.Screen
+import com.example.ecoscan.ui.screen.bookmark.main.BookmarkScreen
 import com.example.ecoscan.ui.screen.detail.DetailScreen
 import com.example.ecoscan.ui.screen.home.HomeScreen
 import com.example.ecoscan.ui.screen.profile.ProfileScreen
@@ -118,7 +119,15 @@ fun MainScreenHolder(
             }
 
             composable(Screen.Profile.route) {
-                ProfileScreen()
+                ProfileScreen(
+                    navigateToBoorkmark = {navController.navigate(Screen.Bookmark.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+//                        restoreState = true
+//                        launchSingleTop = true
+                    } }
+                )
             }
 
             composable(Screen.Subscribe.route) {
@@ -127,6 +136,10 @@ fun MainScreenHolder(
 
             composable(Screen.Setting.route) {
                 SettingScreen()
+            }
+
+            composable(Screen.Bookmark.route) {
+                BookmarkScreen()
             }
 
             composable(Screen.Detail.route){itNv->
