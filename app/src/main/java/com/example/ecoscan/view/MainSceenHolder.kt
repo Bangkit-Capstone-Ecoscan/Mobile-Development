@@ -131,15 +131,21 @@ fun MainScreenHolder(
             }
 
             composable(Screen.Subscribe.route) {
-                SubscribeScreen()
+                SubscribeScreen(
+                    backNavigation = { navController.navigateUp() }
+                )
             }
 
             composable(Screen.Setting.route) {
-                SettingScreen()
+                SettingScreen(
+                    backNavigation = { navController.navigateUp() }
+                )
             }
 
             composable(Screen.Bookmark.route) {
-                BookmarkScreen()
+                BookmarkScreen(
+                    backNavigation = { navController.navigateUp() }
+                )
             }
 
             composable(Screen.Detail.route){itNv->

@@ -10,13 +10,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.ecoscan.ui.component.ListItems
+import com.example.ecoscan.ui.component.TopBarBack
 import com.example.ecoscan.ui.component.TopBarScan
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun BookmarkScreen(){
+fun BookmarkScreen(
+    backNavigation: () -> Unit
+){
     Scaffold (
-        topBar = { TopBarScan() }
+        topBar = { TopBarBack(
+            backNavigation = {backNavigation()}
+        ) }
     ) {
         BookmarkScreenContent()
     }
@@ -46,5 +51,7 @@ fun BookmarkScreenContent(){
 @Preview(showBackground = true)
 @Composable
 fun BookmarkScreenPreview(){
-    BookmarkScreen()
+    BookmarkScreen(
+        backNavigation = {}
+    )
 }
