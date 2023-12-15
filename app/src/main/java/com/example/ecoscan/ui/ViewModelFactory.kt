@@ -7,12 +7,14 @@ import com.example.ecoscan.EcoScanViewModel
 import com.example.ecoscan.data.repository.EcoRepository
 import com.example.ecoscan.di.Injection
 import com.example.ecoscan.ui.screen.detail.DetailViewModel
+import com.example.ecoscan.ui.screen.home.HomeViewModel
 import com.example.ecoscan.ui.screen.login.LoginViewModel
 import com.example.ecoscan.ui.screen.profile.ProfileViewModel
 import com.example.ecoscan.ui.screen.register.RegisterViewModel
 
 class ViewModelFactory (private val repository: EcoRepository): ViewModelProvider.NewInstanceFactory() {
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when {
             modelClass.isAssignableFrom(RegisterViewModel::class.java) -> {
@@ -26,6 +28,9 @@ class ViewModelFactory (private val repository: EcoRepository): ViewModelProvide
             }
             modelClass.isAssignableFrom(ProfileViewModel::class.java) -> {
                 ProfileViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(HomeViewModel::class.java) -> {
+                HomeViewModel(repository) as T
             }
             modelClass.isAssignableFrom(DetailViewModel::class.java) -> {
                 DetailViewModel(repository) as T

@@ -26,13 +26,13 @@ import com.example.ecoscan.ui.theme.Green
 
 @Composable
 fun TopBarProfile(
-
+    navigateToBookmark: () -> Unit
 ) {
     val ecoScanText = buildAnnotatedString {
-        withStyle(style = SpanStyle(MaterialTheme.colorScheme.secondary)) {
+        withStyle(style = SpanStyle(Green)) {
             append(stringResource(id = R.string.title_eco))
         }
-        withStyle(style = SpanStyle(MaterialTheme.colorScheme.primary)) {
+        withStyle(style = SpanStyle(Gold)) {
             append(stringResource(id = R.string.title_scan))
         }
     }
@@ -47,7 +47,7 @@ fun TopBarProfile(
         },
         backgroundColor = Color.White,
         actions = {
-            IconButton(onClick = { /* do something */ }) {
+            IconButton(onClick = { navigateToBookmark() }) {
                 Icon(
                     imageVector = Icons.Default.Bookmarks,
                     contentDescription = "Localized description",
@@ -58,10 +58,10 @@ fun TopBarProfile(
     )
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewTopBarProfile() {
-    EcoScanTheme {
-        TopBarProfile()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewTopBarProfile() {
+//    EcoScanTheme {
+//        TopBarProfile()
+//    }
+//}
