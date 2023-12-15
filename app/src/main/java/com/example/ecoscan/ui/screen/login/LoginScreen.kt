@@ -2,6 +2,10 @@ package com.example.ecoscan.ui.screen.login
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,7 +19,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.IconButton
@@ -24,7 +27,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -33,13 +35,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
@@ -68,10 +70,12 @@ fun LoginScreen(
     navigateToRegister: () -> Unit,
     navigateToHome: () -> Unit,
 ) {
+
     LoginScreenLayout(
         navigateToRegister = navigateToRegister,
         navigateToHome = navigateToHome
     )
+
 }
 
 @Composable
@@ -97,9 +101,16 @@ fun LoginScreenLayout(
         mutableStateOf(false)
     }
 
+    var visible by remember {
+        mutableStateOf(true)
+    }
+
+    val density = LocalDensity.current
+
+
     val loginAccount by viewModel.loginAccount.observeAsState()
 
-    var text by remember{ mutableStateOf("") }
+    var text by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var showPassword by remember { mutableStateOf(false) }
 
@@ -158,13 +169,13 @@ fun LoginScreenLayout(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-
         Row(
             modifier = Modifier
                 .padding(top = 40.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
+
             Image(
                 /// Top Image
                 modifier = Modifier
@@ -172,6 +183,7 @@ fun LoginScreenLayout(
                 painter = painterResource(id = R.drawable.loginimagevector),
                 contentDescription = "loginImage",
             )
+
         }
         Column(
             modifier = Modifier
@@ -196,24 +208,34 @@ fun LoginScreenLayout(
                     imageVector = ImageVector.vectorResource(id = R.drawable.elippse),
                     contentDescription = "backgroundImg",
                 )
+
+
+
                 Column(
                     modifier = Modifier
                         .fillMaxHeight(1f)
                 ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(1f),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            modifier = Modifier,
-                            text = ecoScanText,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 30.sp,
-                            textAlign = TextAlign.Center
 
-                        )
+                    AnimatedVisibility(
+                        visible = visible,
+                        enter = fadeIn(animationSpec = tween(2000, easing = LinearEasing))
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(1f),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                modifier = Modifier,
+                                text = ecoScanText,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 30.sp,
+                                textAlign = TextAlign.Center
+
+                            )
+                        }
                     }
+
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(1f),
@@ -228,8 +250,8 @@ fun LoginScreenLayout(
                     }
 
                     /*
-                    User Name Text Field
-                 */
+                        User Name Text Field
+                    */
                     Row(
                         modifier = Modifier
                             .padding(top = 20.dp)
@@ -265,6 +287,7 @@ fun LoginScreenLayout(
                         )
                     }
 
+
                     if (showDialog) {
                         androidx.compose.material3.AlertDialog(
                             onDismissRequest = {
@@ -276,7 +299,12 @@ fun LoginScreenLayout(
                             text = {
                                 Text(text = "Silahkan Ke Halaman Selanjutnya")
                             },
-                            icon = { Icon(imageVector = Icons.Default.CheckCircle, contentDescription = "checkCircle")},
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.Default.CheckCircle,
+                                    contentDescription = "checkCircle"
+                                )
+                            },
                             confirmButton = {
                                 Button(
                                     onClick = {
@@ -286,7 +314,7 @@ fun LoginScreenLayout(
                                     colors = ButtonDefaults.buttonColors(
                                         MaterialTheme.colorScheme.primary
                                     )
-                                    ) {
+                                ) {
                                     Text(
                                         text = "Yes",
                                         color = Color.Black
@@ -309,7 +337,7 @@ fun LoginScreenLayout(
                             value = password,
                             onValueChange = { newPasword ->
                                 password = newPasword
-                                if (password.length >=  8) {
+                                if (password.length >= 8) {
                                     enabledButton = true
                                 }
                             },
@@ -361,7 +389,7 @@ fun LoginScreenLayout(
 
                     /*
                     Button Sign in
-                 */
+                    */
                     Row(
                         modifier = Modifier
                             .padding(top = 35.dp, start = 70.dp, end = 70.dp)
@@ -416,11 +444,11 @@ fun LoginScreenLayout(
 
                             })
                     }
+
                 }
             }
         }
     }
-
 }
 
 @Preview(showBackground = true)

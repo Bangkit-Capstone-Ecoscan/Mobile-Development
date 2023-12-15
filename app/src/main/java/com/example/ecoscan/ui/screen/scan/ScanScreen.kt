@@ -20,9 +20,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -116,7 +119,7 @@ fun ScanScreenContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-//            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState())
     ) {
         Spacer(
             modifier = Modifier
@@ -139,28 +142,36 @@ fun ScanScreenContent(
             /*
             Place Holder For Image After user taking a photo or scan
          */
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(1f)
-                    .height(200.dp)
-                    .padding(start = 20.dp, end = 20.dp)
-                    .clip(RoundedCornerShape(20.dp)),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+            Card (
+                modifier =  Modifier
+                    .fillMaxWidth()
+                    .height(500.dp)
+                    .padding(bottom = 16.dp, start = 16.dp, end = 16.dp),
+                elevation = 10.dp
             ) {
-                if (capturedImageUri.path?.isNotEmpty() == true) {
-                    AsyncImage(
-                        model = capturedImageUri,
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        contentDescription = "LogoApp",
-                        contentScale = ContentScale.Fit
-                    )
-                } else if (capturedImageUri.path?.isEmpty() == true) {
-                    Image(
-                        painter = painterResource(id = R.drawable.logoapp),
-                        contentDescription = "",
-                        contentScale = ContentScale.FillBounds)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(1f)
+                        .fillMaxHeight()
+                        .padding(start = 20.dp, end = 20.dp)
+                        .clip(RoundedCornerShape(20.dp)),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (capturedImageUri.path?.isNotEmpty() == true) {
+                        AsyncImage(
+                            model = capturedImageUri,
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            contentDescription = "LogoApp",
+                            contentScale = ContentScale.Fit
+                        )
+                    } else if (capturedImageUri.path?.isEmpty() == true) {
+                        Image(
+                            painter = painterResource(id = R.drawable.logoapp),
+                            contentDescription = "",
+                            contentScale = ContentScale.FillBounds)
+                    }
                 }
             }
 
@@ -171,6 +182,7 @@ fun ScanScreenContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 40.dp, end = 40.dp, top = 20.dp),
+                verticalAlignment = Alignment.Bottom,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Button(
@@ -213,7 +225,8 @@ fun ScanScreenContent(
             Row(
                 modifier = Modifier
                     .fillMaxWidth(1f)
-                    .padding(top = 20.dp),
+                    .padding(top = 8.dp),
+                verticalAlignment = Alignment.Bottom,
                 horizontalArrangement = Arrangement.Center
             ) {
                 Button(
@@ -231,14 +244,6 @@ fun ScanScreenContent(
                         fontWeight = FontWeight.Bold
                     )
                 }
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(),
-            ) {
-                ResultScan(foodName = "Seblak")
             }
 
         }

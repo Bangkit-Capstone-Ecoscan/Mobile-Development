@@ -25,16 +25,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.ecoscan.R
 import com.example.ecoscan.ui.component.SwitchMinimal
+import com.example.ecoscan.ui.component.TopBarBack
 import com.example.ecoscan.ui.component.TopBarScan
 import com.example.ecoscan.ui.theme.EcoScanTheme
 import com.example.ecoscan.ui.theme.Gold
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun SettingScreen() {
+fun SettingScreen(
+    backNavigation: () -> Unit
+) {
     Scaffold(
         topBar = {
-            TopBarScan()
+            TopBarBack(
+                backNavigation = {backNavigation()}
+            )
         },
     ) {
         SettingsContent()
@@ -171,6 +176,8 @@ fun SettingsContent() {
 @Composable
 fun SettingScreenPreview() {
     EcoScanTheme {
-        SettingScreen()
+        SettingScreen(
+            backNavigation = {}
+        )
     }
 }
