@@ -2,15 +2,24 @@ package com.example.ecoscan.ui.screen.scan
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.VectorConverter
+import androidx.compose.animation.core.animateValue
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,16 +28,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Card
+import androidx.compose.material.Divider
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -43,33 +60,54 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import coil.compose.AsyncImage
 import com.example.ecoscan.R
+import com.example.ecoscan.data.pref.DataResultScan
 import com.example.ecoscan.data.utils.getImageUri
+import com.example.ecoscan.data.utils.reduceFileImage
 import com.example.ecoscan.data.utils.uriToFile
-import com.example.ecoscan.ui.component.ResultScan
+import com.example.ecoscan.ui.PredictModelFactory
+import com.example.ecoscan.ui.common.UiState
 import com.example.ecoscan.ui.component.TopBarScan
 import com.example.ecoscan.ui.theme.EcoScanTheme
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ScanScreen(
-
+    navigateToResult: () -> Unit,
 ) {
     Scaffold(
         topBar = { TopBarScan() }
     ) {
-        ScanScreenContent()
+        ScanScreenContent(
+            navigateToResult = { navigateToResult() }
+        )
     }
 }
 
 @Composable
 fun ScanScreenContent(
     modifier: Modifier = Modifier,
+    navigateToResult: () -> Unit,
+    context: Context = LocalContext.current,
+    viewModel: ScanViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
+        factory = PredictModelFactory.getInstance(context)
+    ),
 ) {
-    val context = LocalContext.current
+//    val context = LocalContext.current
+
+
+    var showDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var showLoading by remember {
+        mutableStateOf(false)
+    }
 
 
     var currentImageUri: Uri? = null
@@ -78,22 +116,61 @@ fun ScanScreenContent(
         mutableStateOf<Uri>(Uri.EMPTY)
     }
 
+
+    val upload by viewModel.upload.observeAsState()
+
+    when (val uistate = upload) {
+        is UiState.Loading -> {
+            showLoading = true
+        }
+
+        is UiState.Success -> {
+            showLoading = true
+            showDialog = true
+            viewModel.saveResult(
+                DataResultScan(
+                    capturedImageUri.path.toString(),
+                    uistate.data.calcium!!,
+                    uistate.data.carbohydrates!!,
+                    uistate.data.emission!!,
+                    uistate.data.fat!!,
+                    uistate.data.foodName!!,
+                    uistate.data.protein!!,
+                    uistate.data.vitamins!!
+                )
+            )
+//            Toast.makeText(context,"Succes", Toast.LENGTH_SHORT).show()
+        }
+
+        is UiState.Error -> {
+            Toast.makeText(
+                context,
+                (upload as UiState.Error).errorMessage.toString(),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+        else -> {}
+    }
+
+
     val launcherCamera =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.TakePicture()) {
             capturedImageUri = currentImageUri!!
         }
 
     val launcherGallery = rememberLauncherForActivityResult(
-        contract =  ActivityResultContracts.PickVisualMedia()
-    ) {uri: Uri? ->
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri: Uri? ->
         if (uri != null) {
             currentImageUri = uri
             capturedImageUri = currentImageUri!!
         } else {
-            Log.d("Photo Picker","No Media Selected")
+            Log.d("Photo Picker", "No Media Selected")
         }
 
     }
+
 
     fun startGallery() {
         launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
@@ -116,7 +193,7 @@ fun ScanScreenContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-//            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState())
     ) {
         Spacer(
             modifier = Modifier
@@ -139,29 +216,110 @@ fun ScanScreenContent(
             /*
             Place Holder For Image After user taking a photo or scan
          */
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(1f)
-                    .height(200.dp)
-                    .padding(start = 20.dp, end = 20.dp)
-                    .clip(RoundedCornerShape(20.dp)),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                if (capturedImageUri.path?.isNotEmpty() == true) {
-                    AsyncImage(
-                        model = capturedImageUri,
+            Box(modifier = Modifier) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(500.dp)
+                        .padding(bottom = 16.dp, start = 16.dp, end = 16.dp),
+                    elevation = 10.dp
+                ) {
+                    Row(
                         modifier = Modifier
-                            .fillMaxSize(),
-                        contentDescription = "LogoApp",
-                        contentScale = ContentScale.Fit
-                    )
-                } else if (capturedImageUri.path?.isEmpty() == true) {
-                    Image(
-                        painter = painterResource(id = R.drawable.logoapp),
-                        contentDescription = "",
-                        contentScale = ContentScale.FillBounds)
+                            .fillMaxWidth(1f)
+                            .fillMaxHeight()
+                            .padding(start = 20.dp, end = 20.dp)
+                            .clip(RoundedCornerShape(20.dp)),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (capturedImageUri.path?.isNotEmpty() == true) {
+                            AsyncImage(
+                                model = capturedImageUri,
+                                modifier = Modifier
+                                    .fillMaxSize(),
+                                contentDescription = "LogoApp",
+                                contentScale = ContentScale.Fit
+                            )
+                        } else if (capturedImageUri.path?.isEmpty() == true) {
+                            Image(
+                                painter = painterResource(id = R.drawable.logoapp),
+                                contentDescription = "",
+                                contentScale = ContentScale.FillBounds
+                            )
+                        }
+                    }
                 }
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    if (showLoading) {
+                        val infiniteTransition = rememberInfiniteTransition()
+
+                        val boxSize = 420.dp
+                        val animationDuration = 5000
+
+                        val heightAnimation by infiniteTransition.animateValue(
+                            initialValue = 0.dp,
+                            targetValue = boxSize,
+                            typeConverter = Dp.VectorConverter,
+                            animationSpec = infiniteRepeatable(
+                                animation = keyframes {
+                                    durationMillis = animationDuration
+                                    0.dp at 0 // ms
+                                    boxSize at animationDuration / 2
+                                    0.dp at animationDuration using FastOutSlowInEasing
+                                }
+                                // Use the default RepeatMode.Restart to start from 0.dp after each iteration
+                            )
+                        )
+                        Spacer(modifier = Modifier.height(heightAnimation))
+                        Divider(
+                            thickness = 4.dp, color = Color.Black,
+                            modifier = Modifier.fillMaxWidth()
+                                .fillMaxHeight()
+                                .padding(start = 16.dp, end = 16.dp, top = 16.dp)
+                        )
+                    }
+                }
+
+            }
+
+
+            if (showDialog) {
+                androidx.compose.material3.AlertDialog(
+                    onDismissRequest = {
+                        showDialog = false
+                    },
+                    title = {
+                        Text(text = "Scan Berhasil")
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.CheckCircle,
+                            contentDescription = "checkCircle"
+                        )
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                navigateToResult()
+                            },
+                            shape = RoundedCornerShape(20.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                MaterialTheme.colorScheme.primary
+                            )
+                        ) {
+                            Text(
+                                text = "Yes",
+                                color = Color.Black
+                            )
+                        }
+                    }
+                )
             }
 
             /*
@@ -171,6 +329,7 @@ fun ScanScreenContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 40.dp, end = 40.dp, top = 20.dp),
+                verticalAlignment = Alignment.Bottom,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Button(
@@ -213,32 +372,35 @@ fun ScanScreenContent(
             Row(
                 modifier = Modifier
                     .fillMaxWidth(1f)
-                    .padding(top = 20.dp),
+                    .padding(top = 8.dp),
+                verticalAlignment = Alignment.Bottom,
                 horizontalArrangement = Arrangement.Center
             ) {
                 Button(
                     onClick = {
-
+                        val imageFile =
+                            context.uriToFile(capturedImageUri, context).reduceFileImage()
+                        viewModel.uploadImage(imageFile)
                     },
                     modifier = Modifier
                         .width(150.dp),
                     shape = RoundedCornerShape(20.dp),
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
                 ) {
-                    Text(
-                        text = "SCAN",
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    )
+                    if (showLoading) {
+                        androidx.compose.material.CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            color = Color.Gray
+                        )
+                    } else {
+                        Text(
+                            text = "Scan",
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp,
+                        )
+                    }
                 }
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(),
-            ) {
-                ResultScan(foodName = "Seblak")
             }
 
         }
@@ -251,6 +413,8 @@ fun ScanScreenContent(
 @Composable
 fun ScanScreenPreview() {
     EcoScanTheme {
-        ScanScreenContent()
+        ScanScreenContent(
+            navigateToResult = {}
+        )
     }
 }

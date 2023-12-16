@@ -15,7 +15,14 @@ sealed class Screen (val route: String) {
 
     object Subscribe: Screen("subscribe")
 
+    object Bookmark: Screen("bookmark")
+
+    object DetailBookmark: Screen("detailBookmark")
     object Setting: Screen("setting")
+
+    object Detail: Screen("Detail/{id}"){
+        fun createRoute(id: String) = "Detail/$id"
+    }
 
 
 }

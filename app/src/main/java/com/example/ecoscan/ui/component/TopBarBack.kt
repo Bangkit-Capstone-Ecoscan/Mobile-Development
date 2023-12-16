@@ -1,33 +1,27 @@
 package com.example.ecoscan.ui.component
 
+import androidx.compose.material.IconButton
+import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bookmarks
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.ecoscan.R
-import com.example.ecoscan.ui.theme.EcoScanTheme
 import com.example.ecoscan.ui.theme.Gold
 import com.example.ecoscan.ui.theme.Green
 
-
 @Composable
-fun TopBarProfile(
-    navigateToBookmark: () -> Unit
-) {
+fun TopBarBack(
+    backNavigation: () -> Unit
+){
     val ecoScanText = buildAnnotatedString {
         withStyle(style = SpanStyle(Green)) {
             append(stringResource(id = R.string.title_eco))
@@ -45,23 +39,17 @@ fun TopBarProfile(
                 fontWeight = FontWeight.Bold
             )
         },
-        backgroundColor = Color.White,
-        actions = {
-            IconButton(onClick = { navigateToBookmark() }) {
-                Icon(
-                    imageVector = Icons.Default.Bookmarks,
-                    contentDescription = "Localized description",
-                    tint = Color.Black
-                )
+        navigationIcon = {
+            androidx.compose.material3.IconButton(
+                onClick = {
+                    backNavigation()
+                },
+            ) {
+                Icon(imageVector = Icons.Default.ArrowBack, contentDescription ="Back" )
             }
         },
+
+        backgroundColor = Color.White,
     )
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewTopBarProfile() {
-//    EcoScanTheme {
-//        TopBarProfile()
-//    }
-//}

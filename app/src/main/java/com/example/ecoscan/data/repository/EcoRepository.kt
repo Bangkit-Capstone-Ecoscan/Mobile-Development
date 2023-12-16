@@ -1,14 +1,23 @@
 package com.example.ecoscan.data.repository
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
+import com.example.ecoscan.data.pref.DataResultScan
 import com.example.ecoscan.data.pref.UserModel
 import com.example.ecoscan.data.pref.UserPreference
-import com.example.ecoscan.data.remote.response.AuthResponse
+import com.example.ecoscan.data.remote.response.ArticleResponseItem
+import com.example.ecoscan.data.remote.response.DetailResponse
+import com.example.ecoscan.data.remote.response.ErrorResponse
+import com.example.ecoscan.data.remote.response.PredictResponse
 import com.example.ecoscan.data.remote.retrofit.ApiService
 import com.example.ecoscan.ui.common.UiState
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.HttpException
+import java.io.File
 
 class EcoRepository private constructor(
     private val apiService: ApiService,
@@ -21,6 +30,14 @@ class EcoRepository private constructor(
 
     fun getSession(): Flow<UserModel> {
         return userPreference.getSession()
+    }
+
+    suspend fun saveResult(resultScan: DataResultScan) {
+        userPreference.saveResult(resultScan)
+    }
+
+    fun getResult():Flow<DataResultScan> {
+        return userPreference.getResult()
     }
 
     suspend fun logout() {
@@ -52,7 +69,42 @@ class EcoRepository private constructor(
         }
     }
 
+    // Function To List Article
+    suspend fun getAllArticle(): LiveData<UiState<List<ArticleResponseItem>>> = liveData{
+        try {
+            emit(UiState.Loading)
+            val successResponse = apiService.getAllArticle()
+            emit(UiState.Success(successResponse))
+        }
+        catch (e: Exception) {
+            emit(UiState.Error("Error : ${e.message.toString()}"))
+        }
+    }
 
+    // Function To Detail Article
+    suspend fun getDetailArticle(id: String): LiveData<UiState<DetailResponse>> = liveData{
+        try {
+            emit(UiState.Loading)
+            val successResponse = apiService.getDetailArticle(id)
+            emit(UiState.Success(successResponse))
+        }catch (e: Exception) {
+            emit(UiState.Error("Error : ${e.message.toString()}"))
+        }
+    }
+
+    fun scanPredict(image: File) = liveData {
+        emit(UiState.Loading)
+        val requestFile = image.asRequestBody("image/jpg".toMediaType())
+        val file = MultipartBody.Part.createFormData(
+            "image",image.name,requestFile
+        )
+        try {
+            val succesResponse = apiService.scanPredict(file)
+            emit(UiState.Success(succesResponse))
+        } catch (e: Exception) {
+            emit(UiState.Error("Error: ${e.message.toString()}"))
+        }
+    }
 
 
     companion object {

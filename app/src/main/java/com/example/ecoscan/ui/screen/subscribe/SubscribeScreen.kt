@@ -16,15 +16,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ecoscan.ui.component.ListPackage
+import com.example.ecoscan.ui.component.TopBarBack
 import com.example.ecoscan.ui.component.TopBarScan
 import com.example.ecoscan.ui.theme.EcoScanTheme
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun SubscribeScreen(){
-    Scaffold {
+fun SubscribeScreen(
+    backNavigation: () -> Unit
+){
+    Scaffold (
+        topBar = { TopBarBack(
+            backNavigation = {backNavigation()}
+        )}
+    ){
         SubscribeContent()
-        TopBarScan()
     }
 }
 
@@ -61,6 +67,6 @@ fun SubscribeContent(
 @Composable
 fun SubscribeScreenPreview() {
     EcoScanTheme {
-        SubscribeScreen()
+        SubscribeScreen(backNavigation = {})
     }
 }

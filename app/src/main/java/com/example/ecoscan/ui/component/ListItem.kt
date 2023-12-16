@@ -28,7 +28,7 @@ fun ListItems(
     titleArticle: String,
     descArticle: String,
     photoUrl: String,
-    author: String,
+    author: String?,
     year: String,
     modifier: Modifier = Modifier
 ) {
@@ -54,21 +54,27 @@ fun ListItems(
                 Text(
                     text = titleArticle,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.titleMedium.copy(
+                    style = MaterialTheme.typography.titleSmall.copy(
                         fontWeight = FontWeight.ExtraBold
+                    ),
+                    maxLines = 1,
+
                     )
-                )
                 Text(
                     text = descArticle,
                     modifier = Modifier
                         .padding(vertical = 8.dp),
-                    style = MaterialTheme.typography.titleSmall
+                    maxLines = 2,
+                    style = MaterialTheme.typography.titleSmall,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Row {
-                    Text(
-                        text = author,
-                        style = MaterialTheme.typography.titleSmall
-                    )
+                    if (author != null) {
+                        Text(
+                            text = author,
+                            style = MaterialTheme.typography.titleSmall
+                        )
+                    }
                     Text(
                         text = " | ",
                         style = MaterialTheme.typography.titleSmall
@@ -86,7 +92,7 @@ fun ListItems(
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(90.dp)
+                    .size(100.dp)
                     .padding(vertical = 8.dp)
                     .fillMaxHeight()
                     .clip(RoundedCornerShape(16.dp))

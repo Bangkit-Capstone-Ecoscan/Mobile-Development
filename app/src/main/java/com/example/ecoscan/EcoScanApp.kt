@@ -27,11 +27,11 @@ class EcoScanApp : ComponentActivity() {
                 }
             }
         }
-            setContent {
-                EcoScanTheme {
-                    MainScreenHolder()
-                }
+        setContent {
+            EcoScanTheme {
+                MainScreenHolder()
             }
+        }
 
     }
 }

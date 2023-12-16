@@ -24,6 +24,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.ecoscan.R
 import com.example.ecoscan.ui.component.BottomBar
 import com.example.ecoscan.ui.navigation.Screen
+import com.example.ecoscan.ui.screen.bookmark.detail.DetailBookmarkScreen
+import com.example.ecoscan.ui.screen.bookmark.main.BookmarkScreen
+import com.example.ecoscan.ui.screen.detail.DetailScreen
 import com.example.ecoscan.ui.screen.home.HomeScreen
 import com.example.ecoscan.ui.screen.profile.ProfileScreen
 import com.example.ecoscan.ui.screen.scan.ScanScreen
@@ -99,24 +102,71 @@ fun MainScreenHolder(
                             restoreState = true
                             launchSingleTop = true
                         }
+                    },
+                    navigateToDetail = { id->
+                        navController.navigate(Screen.Detail.createRoute(id)){
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            restoreState = true
+                            launchSingleTop = true
+                        }
                     }
                 )
             }
 
             composable(Screen.Scan.route) {
-                ScanScreen()
+                ScanScreen(
+                    navigateToResult = {
+                        navController.popBackStack()
+                        navController.navigate(Screen.DetailBookmark.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+//                            restoreState = true
+                            launchSingleTop = true
+                        }
+                    }
+                )
             }
 
             composable(Screen.Profile.route) {
-                ProfileScreen()
+                ProfileScreen(
+                    navigateToBoorkmark = {navController.navigate(Screen.DetailBookmark.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+//                        restoreState = true
+//                        launchSingleTop = true
+                    } }
+                )
             }
 
             composable(Screen.Subscribe.route) {
-                SubscribeScreen()
+                SubscribeScreen(
+                    backNavigation = { navController.navigateUp() }
+                )
             }
 
             composable(Screen.Setting.route) {
-                SettingScreen()
+                SettingScreen(
+                    backNavigation = { navController.navigateUp() }
+                )
+            }
+
+            composable(Screen.Bookmark.route) {
+                BookmarkScreen(
+                    backNavigation = { navController.navigateUp() }
+                )
+            }
+
+            composable(Screen.DetailBookmark.route) {
+                DetailBookmarkScreen()
+            }
+
+            composable(Screen.Detail.route){itNv->
+                val id = itNv.arguments?.getString("id") ?: ""
+                DetailScreen(id = id)
             }
         }
     }
