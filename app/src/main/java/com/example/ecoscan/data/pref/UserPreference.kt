@@ -1,6 +1,7 @@
 package com.example.ecoscan.data.pref
 
 import android.content.Context
+import android.net.Uri
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -39,6 +40,34 @@ class UserPreference private constructor(private val dataStore: DataStore<Prefer
         }
     }
 
+    suspend fun saveResult(result: DataResultScan) {
+        dataStore.edit {
+            result.url
+            it[calcium] = result.calcium
+            it[carbon] = result.carbon
+            it[emission] = result.emission
+            it[fat] = result.fat
+            it[foodName] = result.foodName
+            it[protein] = result.protein
+            it[vitamin] = result.vitamin
+
+        }
+    }
+    fun getResult(): Flow<DataResultScan> {
+        return dataStore.data.map {results ->
+            DataResultScan(
+                results[url] ?: "",
+                results[calcium] ?: "",
+                results[carbon] ?: "",
+                results[emission] ?: "",
+                results[fat] ?: "",
+                results[foodName] ?: "",
+                results[protein] ?: "",
+                results[vitamin] ?: "",
+            )
+        }
+    }
+
     fun getThemeSetting(): Flow<Boolean> {
         return dataStore.data.map { preferences ->
             preferences[THEME_KEY] ?: false
@@ -56,6 +85,15 @@ class UserPreference private constructor(private val dataStore: DataStore<Prefer
         private val TOKEN_KEY = stringPreferencesKey("token")
         private val IS_LOGIN_KEY = booleanPreferencesKey("isLogin")
         private val THEME_KEY = booleanPreferencesKey("theme_setting")
+        private val calcium = stringPreferencesKey("calcium")
+        private val carbon = stringPreferencesKey("carbon")
+        private val emission = stringPreferencesKey("emission")
+        private val fat = stringPreferencesKey("fat")
+        private val foodName = stringPreferencesKey("foodName")
+        private val protein = stringPreferencesKey("protein")
+        private val vitamin = stringPreferencesKey("vitamin")
+        private val url = stringPreferencesKey("url")
+
 
         fun getInstance(dataStore: DataStore<Preferences>): UserPreference {
             return UserPreference(dataStore)
