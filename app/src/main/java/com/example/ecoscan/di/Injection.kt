@@ -22,7 +22,6 @@ object PredictInjection {
     fun provideRepository(context: Context): EcoRepository {
         val predictApiService = PredictApiConfig.getApiService()
         val pref = UserPreference.getInstance(context.dataStore)
-        val user = runBlocking { pref.getSession().first() }
         return EcoRepository.getInstance(predictApiService,pref)
     }
 

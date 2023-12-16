@@ -4,10 +4,14 @@ package com.example.ecoscan.data.remote.retrofit
 import com.example.ecoscan.data.remote.response.ArticleResponseItem
 import com.example.ecoscan.data.remote.response.AuthResponse
 import com.example.ecoscan.data.remote.response.DetailResponse
+import com.example.ecoscan.data.remote.response.PredictResponse
+import okhttp3.MultipartBody
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 interface ApiService {
@@ -36,5 +40,13 @@ interface ApiService {
     suspend fun getDetailArticle(
         @Path("id") id: String
     ): DetailResponse
+
+
+    @Multipart
+    @POST("predict/")
+    suspend fun scanPredict(
+        @Part image: MultipartBody.Part
+    ): PredictResponse
+
 
 }
