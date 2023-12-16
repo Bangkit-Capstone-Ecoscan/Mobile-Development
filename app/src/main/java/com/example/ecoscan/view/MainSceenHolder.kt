@@ -24,6 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.ecoscan.R
 import com.example.ecoscan.ui.component.BottomBar
 import com.example.ecoscan.ui.navigation.Screen
+import com.example.ecoscan.ui.screen.bookmark.detail.DetailBookmarkScreen
 import com.example.ecoscan.ui.screen.bookmark.main.BookmarkScreen
 import com.example.ecoscan.ui.screen.detail.DetailScreen
 import com.example.ecoscan.ui.screen.home.HomeScreen
@@ -115,12 +116,23 @@ fun MainScreenHolder(
             }
 
             composable(Screen.Scan.route) {
-                ScanScreen()
+                ScanScreen(
+                    navigateToResult = {
+                        navController.popBackStack()
+                        navController.navigate(Screen.DetailBookmark.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+//                            restoreState = true
+                            launchSingleTop = true
+                        }
+                    }
+                )
             }
 
             composable(Screen.Profile.route) {
                 ProfileScreen(
-                    navigateToBoorkmark = {navController.navigate(Screen.Bookmark.route) {
+                    navigateToBoorkmark = {navController.navigate(Screen.DetailBookmark.route) {
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
                         }
@@ -131,15 +143,25 @@ fun MainScreenHolder(
             }
 
             composable(Screen.Subscribe.route) {
-                SubscribeScreen()
+                SubscribeScreen(
+                    backNavigation = { navController.navigateUp() }
+                )
             }
 
             composable(Screen.Setting.route) {
-                SettingScreen()
+                SettingScreen(
+                    backNavigation = { navController.navigateUp() }
+                )
             }
 
             composable(Screen.Bookmark.route) {
-                BookmarkScreen()
+                BookmarkScreen(
+                    backNavigation = { navController.navigateUp() }
+                )
+            }
+
+            composable(Screen.DetailBookmark.route) {
+                DetailBookmarkScreen()
             }
 
             composable(Screen.Detail.route){itNv->
