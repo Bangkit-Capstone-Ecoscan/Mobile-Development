@@ -277,10 +277,12 @@ fun ProfileContent(
     }
 }
 
-//@Preview(showBackground = true, device = Devices.PIXEL_4)
-//@Composable
-//fun ProfileScreenPreview() {
-//    EcoScanTheme {
-//        ProfileScreen()
-//    }
-//}
+@Preview(showBackground = true, device = Devices.PIXEL_4)
+@Composable
+fun ProfileScreenPreview() {
+    EcoScanTheme {
+        ProfileScreen(
+            navigateToBoorkmark = {}
+        )
+    }
+}

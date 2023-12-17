@@ -126,6 +126,7 @@ fun LoginScreenLayout(
                 UserModel(
                     uiState.data.user.username,
                     uiState.data.token,
+                    uiState.data.user.quota
                 )
             )
         }
