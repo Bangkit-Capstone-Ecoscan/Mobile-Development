@@ -23,14 +23,12 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -53,42 +51,28 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.example.ecoscan.R
-import com.example.ecoscan.di.Injection
 import com.example.ecoscan.ui.ViewModelFactory
 import com.example.ecoscan.ui.component.TopBarProfile
 import com.example.ecoscan.ui.theme.EcoScanTheme
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-
 fun ProfileScreen(
-    navigateToBoorkmark: () -> Unit,
-    context: Context = LocalContext.current,
-    viewModel: ProfileViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
-        factory = ViewModelFactory(Injection.provideRepository(context))
-    ),
+    navigateToBoorkmark: () -> Unit
 ) {
-    var showDialog by remember {
-        mutableStateOf(false)
-    }
-
-    var showLoading by remember {
-        mutableStateOf(false)
-    }
     Scaffold(
         topBar = { TopBarProfile(
             navigateToBookmark = {navigateToBoorkmark()}
         )
         }
     ) {
-        viewModel.getSession().observeAsState().value?.let {user->
-            ProfileContent(
-                image = "https://img.freepik.com/premium-vector/account-icon-user-icon-vector-graphics_292645-552.jpg",
-                username = user.email,
-                subscribe = "Bronze",
-                password = user.quota.toString()
-            )
-        }
+        ProfileContent(
+            image = "https://imgx.sonora.id/crop/0x0:0x0/700x465/photo/2020/02/17/2398193539.png",
+            username = "EcoScanUser",
+            subscribe = "Langganan",
+            email = "EcoScan@gmail.com",
+            password = "TestPassword"
+        )
     }
 }
 
@@ -99,6 +83,7 @@ fun ProfileContent(
     image: String,
     username: String,
     subscribe: String,
+    email: String,
     password: String,
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
@@ -177,7 +162,7 @@ fun ProfileContent(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     androidx.compose.material.OutlinedTextField(
-                        value = username,
+                        value = email,
                         onValueChange = {
                             //Do SomeThing
                         },
@@ -189,7 +174,7 @@ fun ProfileContent(
                             .height(50.dp),
                         leadingIcon = {
                             Icon(
-                                imageVector = Icons.Default.Person,
+                                imageVector = Icons.Default.Email,
                                 contentDescription = "emailIcon"
                             )
                         },
@@ -292,12 +277,10 @@ fun ProfileContent(
     }
 }
 
-@Preview(showBackground = true, device = Devices.PIXEL_4)
-@Composable
-fun ProfileScreenPreview() {
-    EcoScanTheme {
-        ProfileScreen(
-            navigateToBoorkmark = {}
-        )
-    }
-}
+//@Preview(showBackground = true, device = Devices.PIXEL_4)
+//@Composable
+//fun ProfileScreenPreview() {
+//    EcoScanTheme {
+//        ProfileScreen()
+//    }
+//}

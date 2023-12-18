@@ -13,7 +13,6 @@ import com.example.ecoscan.ui.screen.login.LoginViewModel
 import com.example.ecoscan.ui.screen.profile.ProfileViewModel
 import com.example.ecoscan.ui.screen.register.RegisterViewModel
 import com.example.ecoscan.ui.screen.scan.ScanViewModel
-import com.example.ecoscan.ui.screen.subscribe.SubscribeViewModel
 
 class ViewModelFactory (private val repository: EcoRepository): ViewModelProvider.NewInstanceFactory() {
 
@@ -43,9 +42,6 @@ class ViewModelFactory (private val repository: EcoRepository): ViewModelProvide
             }
             modelClass.isAssignableFrom(DetailBookmarkViewModel::class.java) -> {
                 DetailBookmarkViewModel(repository) as T
-            }
-            modelClass.isAssignableFrom(SubscribeViewModel::class.java) -> {
-                SubscribeViewModel(repository) as T
             }
             else -> {
                 throw IllegalArgumentException("Unknown ViewModel Class " + modelClass.name)

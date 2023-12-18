@@ -2,20 +2,21 @@ package com.example.ecoscan.data.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
-import com.example.ecoscan.data.models.Paket
-import com.example.ecoscan.data.models.PaketDataSource.paket
 import com.example.ecoscan.data.pref.DataResultScan
 import com.example.ecoscan.data.pref.UserModel
 import com.example.ecoscan.data.pref.UserPreference
 import com.example.ecoscan.data.remote.response.ArticleResponseItem
 import com.example.ecoscan.data.remote.response.DetailResponse
+import com.example.ecoscan.data.remote.response.ErrorResponse
+import com.example.ecoscan.data.remote.response.PredictResponse
 import com.example.ecoscan.data.remote.retrofit.ApiService
 import com.example.ecoscan.ui.common.UiState
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import retrofit2.HttpException
 import java.io.File
 
 class EcoRepository private constructor(
@@ -105,10 +106,6 @@ class EcoRepository private constructor(
         }
     }
 
-    // Show List Package
-    fun getAllPaket(): Flow<List<Paket>> {
-        return flowOf(paket)
-    }
 
     companion object {
         fun getInstance(

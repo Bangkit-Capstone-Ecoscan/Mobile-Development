@@ -27,7 +27,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -127,7 +126,6 @@ fun LoginScreenLayout(
                 UserModel(
                     uiState.data.user.username,
                     uiState.data.token,
-                    uiState.data.user.quota
                 )
             )
         }
@@ -273,7 +271,7 @@ fun LoginScreenLayout(
                                 .height(50.dp),
                             leadingIcon = {
                                 Icon(
-                                    imageVector = Icons.Default.Person,
+                                    imageVector = Icons.Default.Email,
                                     contentDescription = "emailIcon"
                                 )
                             },
