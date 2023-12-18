@@ -32,7 +32,10 @@ import com.example.ecoscan.ui.theme.RedSubs
 
 @Composable
 fun ListPackage(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    paket: String,
+    price: String,
+    desc: String
 ) {
     androidx.compose.material.Card(
         shape = MaterialTheme.shapes.medium,
@@ -51,24 +54,25 @@ fun ListPackage(
                     .weight(1f)
             ) {
                 Text(
-                    text = "Rp 30.000",
-                    modifier = Modifier
+                    text = paket,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.ExtraBold
+                    ),
+                    modifier = modifier
                         .padding(
                             horizontal = 10.dp,
                             vertical = 10.dp
-                        ),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp,
+                        )
                 )
                 Text(
-                    text = "200 Scan / Bulan",
+                    text = desc,
                     modifier = modifier
                         .padding(
                             horizontal = 10.dp,
                             vertical = 10.dp
                         ),
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
                 )
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -76,15 +80,25 @@ fun ListPackage(
                         .fillMaxWidth()
                         .background(GraySubs)
                         .size(width = 0.dp, height = 55.dp),
-                    horizontalArrangement = Arrangement.End,
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
+                    Text(
+                        text = price,
+                        modifier = Modifier
+                            .padding(
+                                horizontal = 10.dp,
+                                vertical = 10.dp
+                            ),
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 14.sp,
+                    )
                     Button(
                         modifier = Modifier
                             .padding(
                                 horizontal = 10.dp,
                                 vertical = 10.dp
-                            )
-                            .width(100.dp),
+
+                            ),
                         onClick = {},
                         shape = RoundedCornerShape(20.dp),
                         colors = ButtonDefaults.buttonColors(RedSubs)
@@ -106,6 +120,10 @@ fun ListPackage(
 @Composable
 fun ListPackagePreview() {
     EcoScanTheme {
-        ListPackage()
+        ListPackage(
+            paket = "Bronze",
+            price = "Rp 30.000",
+            desc = "15 Scan / Bulan"
+        )
     }
 }
