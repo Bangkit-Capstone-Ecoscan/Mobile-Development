@@ -30,6 +30,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -52,6 +53,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.example.ecoscan.R
+import com.example.ecoscan.di.Injection
 import com.example.ecoscan.ui.ViewModelFactory
 import com.example.ecoscan.ui.component.TopBarProfile
 import com.example.ecoscan.ui.theme.EcoScanTheme
@@ -60,21 +62,33 @@ import com.example.ecoscan.ui.theme.EcoScanTheme
 @Composable
 
 fun ProfileScreen(
-    navigateToBoorkmark: () -> Unit
+    navigateToBoorkmark: () -> Unit,
+    context: Context = LocalContext.current,
+    viewModel: ProfileViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
+        factory = ViewModelFactory(Injection.provideRepository(context))
+    ),
 ) {
+    var showDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var showLoading by remember {
+        mutableStateOf(false)
+    }
     Scaffold(
         topBar = { TopBarProfile(
             navigateToBookmark = {navigateToBoorkmark()}
         )
         }
     ) {
-        ProfileContent(
-            image = "https://img.freepik.com/premium-vector/account-icon-user-icon-vector-graphics_292645-552.jpg",
-            username = "EcoScanUser",
-            subscribe = "Bronze",
-            email = "EcoScan@gmail.com",
-            password = "TestPassword"
-        )
+        viewModel.getSession().observeAsState().value?.let {user->
+            ProfileContent(
+                image = "https://img.freepik.com/premium-vector/account-icon-user-icon-vector-graphics_292645-552.jpg",
+                username = user.email,
+                subscribe = "Bronze",
+                password = user.quota.toString()
+            )
+        }
     }
 }
 
@@ -85,7 +99,6 @@ fun ProfileContent(
     image: String,
     username: String,
     subscribe: String,
-    email: String,
     password: String,
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
