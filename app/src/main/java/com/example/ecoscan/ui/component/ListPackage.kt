@@ -11,9 +11,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -35,7 +41,8 @@ fun ListPackage(
     modifier: Modifier = Modifier,
     paket: String,
     price: String,
-    desc: String
+    desc: String,
+    onClick: () -> Unit
 ) {
     androidx.compose.material.Card(
         shape = MaterialTheme.shapes.medium,
@@ -99,7 +106,7 @@ fun ListPackage(
                                 vertical = 10.dp
 
                             ),
-                        onClick = {},
+                        onClick = onClick,
                         shape = RoundedCornerShape(20.dp),
                         colors = ButtonDefaults.buttonColors(RedSubs)
                     ) {
@@ -123,7 +130,8 @@ fun ListPackagePreview() {
         ListPackage(
             paket = "Bronze",
             price = "Rp 30.000",
-            desc = "15 Scan / Bulan"
+            desc = "15 Scan / Bulan",
+            onClick = {}
         )
     }
 }

@@ -11,6 +11,7 @@ import com.example.ecoscan.data.remote.response.ArticleResponseItem
 import com.example.ecoscan.data.remote.response.DetailResponse
 import com.example.ecoscan.data.remote.retrofit.ApiService
 import com.example.ecoscan.ui.common.UiState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import okhttp3.MediaType.Companion.toMediaType
@@ -108,6 +109,17 @@ class EcoRepository private constructor(
     // Show List Package
     fun getAllPaket(): Flow<List<Paket>> {
         return flowOf(paket)
+    }
+
+    // Transaction Paket Quota
+    fun paketQuota(paket: String) = liveData{
+        emit(UiState.Loading)
+        try {
+            val successResponse = apiService.paketQuota(paket)
+            emit(UiState.Success(successResponse))
+        }catch (e: Exception){
+            emit(UiState.Error("Error: ${e.message.toString()}"))
+        }
     }
 
     companion object {
