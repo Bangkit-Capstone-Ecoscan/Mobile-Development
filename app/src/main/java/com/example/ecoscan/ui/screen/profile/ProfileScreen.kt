@@ -23,6 +23,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -57,6 +58,7 @@ import com.example.ecoscan.ui.theme.EcoScanTheme
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
+
 fun ProfileScreen(
     navigateToBoorkmark: () -> Unit
 ) {
@@ -67,9 +69,9 @@ fun ProfileScreen(
         }
     ) {
         ProfileContent(
-            image = "https://imgx.sonora.id/crop/0x0:0x0/700x465/photo/2020/02/17/2398193539.png",
+            image = "https://img.freepik.com/premium-vector/account-icon-user-icon-vector-graphics_292645-552.jpg",
             username = "EcoScanUser",
-            subscribe = "Langganan",
+            subscribe = "Bronze",
             email = "EcoScan@gmail.com",
             password = "TestPassword"
         )
@@ -162,7 +164,7 @@ fun ProfileContent(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     androidx.compose.material.OutlinedTextField(
-                        value = email,
+                        value = username,
                         onValueChange = {
                             //Do SomeThing
                         },
@@ -174,7 +176,7 @@ fun ProfileContent(
                             .height(50.dp),
                         leadingIcon = {
                             Icon(
-                                imageVector = Icons.Default.Email,
+                                imageVector = Icons.Default.Person,
                                 contentDescription = "emailIcon"
                             )
                         },
