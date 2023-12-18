@@ -53,10 +53,10 @@ interface ApiService {
     ): PredictResponse
 
     //    PATCH PAKET QUOTA
-    @Multipart
-    @PATCH("/quota/add/{package}")
+    @FormUrlEncoded
+    @PATCH("/quota/add")
     suspend fun paketQuota(
-        @Part("package") paket: String
+        @Field("package") paket: String
     ): PaketResponse
 
 }
