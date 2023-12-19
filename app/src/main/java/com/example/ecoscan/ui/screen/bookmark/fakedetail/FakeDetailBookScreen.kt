@@ -1,13 +1,11 @@
-package com.example.ecoscan.ui.screen.bookmark.detail
+package com.example.ecoscan.ui.screen.bookmark.fakedetail
 
-import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
@@ -17,54 +15,33 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.ecoscan.di.Injection
 import com.example.ecoscan.ui.ViewModelFactory
 import com.example.ecoscan.ui.common.UiState
-import com.example.ecoscan.ui.component.TopBarScan
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun DetailBookmarkScreen(
-    id: String,
+fun FakeDetailBookScreen(
     context: Context = LocalContext.current,
-    viewModel: DetailBookmarkViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
+    viewModel: FakeDetailBookViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
         factory = ViewModelFactory(Injection.provideRepository(context))
     ),
 ) {
-    Scaffold(
-        topBar = { TopBarScan() }
-    ) {
-        viewModel.getDetailById.observeAsState(initial = UiState.Loading).value.let { uiState ->
-            when (uiState) {
-                is UiState.Loading -> {
-                    viewModel.detailResultById(id)
-                }
+    val dataDummyResult = viewModel.getResult().observeAsState()
 
-                is UiState.Success -> {
-                    val dataResult = uiState.data
-                    DetailBookmarkContent(
-                        imageUrl = dataResult.imageUrl,
-                        foodName = dataResult.foodName,
-                        emission = dataResult.emission,
-                        carbohydrates = dataResult.carbohydrates,
-                        calcium = dataResult.calcium,
-                        vitamins = dataResult.vitamins,
-                        protein = dataResult.protein,
-                        fat = dataResult.fat
-                    )
-                }
-
-                is UiState.Error -> {
-
-                }
-
-                else -> {}
-            }
-        }
+    dataDummyResult.value?.apply {
+        DetailBookmarkContent(
+            url,
+            foodName,
+            emission,
+            carbon,
+            calcium,
+            vitamin,
+            protein,
+            fat,
+        )
     }
 }
 
@@ -183,12 +160,4 @@ fun DetailBookmarkContent(
     }
 
 
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DetailBookmarkPreview() {
-    DetailBookmarkContent(
-
-    )
 }

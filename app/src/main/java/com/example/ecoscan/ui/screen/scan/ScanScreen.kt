@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -70,7 +69,8 @@ import com.example.ecoscan.data.pref.DataResultScan
 import com.example.ecoscan.data.utils.getImageUri
 import com.example.ecoscan.data.utils.reduceFileImage
 import com.example.ecoscan.data.utils.uriToFile
-import com.example.ecoscan.ui.PredictModelFactory
+import com.example.ecoscan.di.Injection
+import com.example.ecoscan.ui.ViewModelFactory
 import com.example.ecoscan.ui.common.UiState
 import com.example.ecoscan.ui.component.TopBarScan
 import com.example.ecoscan.ui.theme.EcoScanTheme
@@ -84,7 +84,7 @@ fun ScanScreen(
         topBar = { TopBarScan() }
     ) {
         ScanScreenContent(
-            navigateToResult = { navigateToResult() }
+            navigateToResult = {navigateToResult()}
         )
     }
 }
@@ -95,11 +95,10 @@ fun ScanScreenContent(
     navigateToResult: () -> Unit,
     context: Context = LocalContext.current,
     viewModel: ScanViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
-        factory = PredictModelFactory.getInstance(context)
+        factory = ViewModelFactory(Injection.provideRepository(context))
     ),
-) {
-//    val context = LocalContext.current
 
+    ) {
 
     var showDialog by remember {
         mutableStateOf(false)
@@ -116,8 +115,11 @@ fun ScanScreenContent(
         mutableStateOf<Uri>(Uri.EMPTY)
     }
 
-
+    val storeResult by viewModel.storeResults.observeAsState()
+    val storeImages by viewModel.storeImages.observeAsState()
+    val getResults by viewModel.getResult().observeAsState()
     val upload by viewModel.upload.observeAsState()
+
 
     when (val uistate = upload) {
         is UiState.Loading -> {
@@ -125,29 +127,48 @@ fun ScanScreenContent(
         }
 
         is UiState.Success -> {
+
             showLoading = true
-            showDialog = true
-            viewModel.saveResult(
-                DataResultScan(
-                    capturedImageUri.path.toString(),
-                    uistate.data.calcium!!,
-                    uistate.data.carbohydrates!!,
-                    uistate.data.emission!!,
-                    uistate.data.fat!!,
-                    uistate.data.foodName!!,
-                    uistate.data.protein!!,
-                    uistate.data.vitamins!!
-                )
-            )
-//            Toast.makeText(context,"Succes", Toast.LENGTH_SHORT).show()
+            when (val storeImage = storeImages) {
+                is UiState.Success -> {
+                    showDialog = true
+                    uistate.data.let {
+                        when (storeResult) {
+                            is UiState.Success -> {
+                                navigateToResult()
+                            }
+
+                            else -> {}
+                        }
+                        viewModel.saveResult(
+                            DataResultScan (
+                                storeImage.data.url,
+                                it.calcium.toString(),
+                                it.carbohydrates.toString(),
+                                it.emission.toString(),
+                                it.fat.toString(),
+                                it.foodName.toString(),
+                                it.protein.toString(),
+                                it.vitamins.toString(),
+                            )
+                        )
+
+                    }
+                    Log.d("Check Url", "ScanScreenContent: ${storeImage.data.url}")
+                }
+
+                else -> {}
+            }
+
         }
 
+
         is UiState.Error -> {
-            Toast.makeText(
-                context,
-                (upload as UiState.Error).errorMessage.toString(),
-                Toast.LENGTH_SHORT
-            ).show()
+//            Toast.makeText(
+//                context,
+//                (upload as UiState.Error).errorMessage.toString(),
+//                Toast.LENGTH_SHORT
+//            ).show()
         }
 
         else -> {}
@@ -188,6 +209,8 @@ fun ScanScreenContent(
             startCamera()
         }
     }
+
+
 
 
     Column(
@@ -279,7 +302,8 @@ fun ScanScreenContent(
                         Spacer(modifier = Modifier.height(heightAnimation))
                         Divider(
                             thickness = 4.dp, color = Color.Black,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
                                 .fillMaxHeight()
                                 .padding(start = 16.dp, end = 16.dp, top = 16.dp)
                         )
@@ -289,7 +313,9 @@ fun ScanScreenContent(
             }
 
 
+
             if (showDialog) {
+
                 androidx.compose.material3.AlertDialog(
                     onDismissRequest = {
                         showDialog = false
@@ -306,7 +332,20 @@ fun ScanScreenContent(
                     confirmButton = {
                         Button(
                             onClick = {
-                                navigateToResult()
+                                getResults?.apply {
+                                    viewModel.storeResult(
+                                        calcium,
+                                        carbon,
+                                        emission,
+                                        fat,
+                                        foodName,
+                                        protein,
+                                        vitamin,
+                                        url
+                                    )
+                                    Log.d("checkUrl", "ScanScreenContent: $url")
+                                }
+
                             },
                             shape = RoundedCornerShape(20.dp),
                             colors = ButtonDefaults.buttonColors(
@@ -322,9 +361,10 @@ fun ScanScreenContent(
                 )
             }
 
+
             /*
-            Button Gallery And Camera
-         */
+                Button Gallery And Camera
+            */
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -381,6 +421,8 @@ fun ScanScreenContent(
                         val imageFile =
                             context.uriToFile(capturedImageUri, context).reduceFileImage()
                         viewModel.uploadImage(imageFile)
+                        viewModel.storeImage(imageFile)
+//
                     },
                     modifier = Modifier
                         .width(150.dp),

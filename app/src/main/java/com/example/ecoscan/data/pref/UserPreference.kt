@@ -1,7 +1,6 @@
 package com.example.ecoscan.data.pref
 
 import android.content.Context
-import android.net.Uri
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -45,7 +44,7 @@ class UserPreference private constructor(private val dataStore: DataStore<Prefer
 
     suspend fun saveResult(result: DataResultScan) {
         dataStore.edit {
-            result.url
+            it[url] = result.url
             it[calcium] = result.calcium
             it[carbon] = result.carbon
             it[emission] = result.emission
@@ -97,6 +96,7 @@ class UserPreference private constructor(private val dataStore: DataStore<Prefer
         private val protein = stringPreferencesKey("protein")
         private val vitamin = stringPreferencesKey("vitamin")
         private val url = stringPreferencesKey("url")
+        private val urls = stringPreferencesKey("urls")
 
 
         fun getInstance(dataStore: DataStore<Preferences>): UserPreference {

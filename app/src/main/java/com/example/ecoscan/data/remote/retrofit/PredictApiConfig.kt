@@ -12,7 +12,7 @@ class PredictApiConfig {
     companion object {
 
         private const val baseUrl = "https://predict-pbjv724rza-et.a.run.app/"
-        fun getApiService(): ApiService {
+        fun getApiService(): ApiService2 {
             val loggingInterceptor = HttpLoggingInterceptor()
                 .setLevel(HttpLoggingInterceptor.Level.BODY)
             val client = OkHttpClient.Builder()
@@ -23,7 +23,7 @@ class PredictApiConfig {
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build()
-            return retrofit.create(ApiService::class.java)
+            return retrofit.create(ApiService2::class.java)
         }
     }
 

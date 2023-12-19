@@ -9,7 +9,10 @@ import com.example.ecoscan.data.pref.UserModel
 import com.example.ecoscan.data.pref.UserPreference
 import com.example.ecoscan.data.remote.response.ArticleResponseItem
 import com.example.ecoscan.data.remote.response.DetailResponse
+import com.example.ecoscan.data.remote.response.DetailResultResponse
+import com.example.ecoscan.data.remote.response.GetResultResponseItem
 import com.example.ecoscan.data.remote.retrofit.ApiService
+import com.example.ecoscan.data.remote.retrofit.ApiService2
 import com.example.ecoscan.ui.common.UiState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -20,6 +23,7 @@ import java.io.File
 
 class EcoRepository private constructor(
     private val apiService: ApiService,
+    private val apiService2: ApiService2,
     private val userPreference: UserPreference,
 ) {
 
@@ -98,10 +102,58 @@ class EcoRepository private constructor(
             "image",image.name,requestFile
         )
         try {
-            val succesResponse = apiService.scanPredict(file)
+            val succesResponse = apiService2.scanPredict(file)
             emit(UiState.Success(succesResponse))
         } catch (e: Exception) {
             emit(UiState.Error("Error: ${e.message.toString()}"))
+        }
+    }
+
+    fun storeImage(image: File) = liveData {
+        emit(UiState.Loading)
+        val requestFile = image.asRequestBody("file/jpg".toMediaType())
+        val file = MultipartBody.Part.createFormData(
+            "file",image.name,requestFile
+        )
+        try {
+            val successResponse = apiService.storeImage(file)
+            emit(UiState.Success(successResponse))
+        } catch (e: Exception) {
+            emit(UiState.Error("Error ${e.message.toString()}"))
+        }
+    }
+
+    fun storeResult(calcium: String, carbohydrates: String, emissions: String, fat: String, food_name: String, protein: String, vitamins: String, image_url: String) = liveData {
+        emit(UiState.Loading)
+        try {
+            val successResponse = apiService.storeResult(calcium,carbohydrates,emissions,fat,food_name,protein,vitamins,image_url)
+            emit(UiState.Success(successResponse))
+        } catch (e: Exception) {
+            emit(UiState.Error("Error ${e.message.toString()}"))
+        }
+    }
+
+    suspend fun getResultScan(
+//        token: String
+    ): LiveData<UiState<List<GetResultResponseItem>>> = liveData {
+        emit(UiState.Loading)
+        try {
+            val successResponse = apiService.getResult(
+//                token
+            )
+            emit(UiState.Success(successResponse))
+        } catch (e: Exception) {
+            emit(UiState.Error("Error ${e.message.toString()}"))
+        }
+    }
+
+    suspend fun getDetailScanById(id: String): LiveData<UiState<DetailResultResponse>> = liveData {
+        emit(UiState.Loading)
+        try {
+            val successResponse = apiService.getDetailResultById(id)
+            emit(UiState.Success(successResponse))
+        } catch (e: Exception) {
+            emit(UiState.Error(" Error ${e.message.toString()}"))
         }
     }
 
@@ -113,7 +165,8 @@ class EcoRepository private constructor(
     companion object {
         fun getInstance(
             apiService: ApiService,
+            apiService2: ApiService2,
             userPreference: UserPreference,
-        ): EcoRepository = EcoRepository(apiService, userPreference)
+        ): EcoRepository = EcoRepository(apiService,apiService2, userPreference)
     }
 }
