@@ -6,19 +6,19 @@ object PaketDataSource {
             id = 1,
             paket = "Bronze",
             price = "15.000",
-            desc = "15 Scan / Bulan"
+            desc = "15 Scan "
         ),
         Paket(
             id = 2,
             paket = "Silver",
             price = "25.000",
-            desc = "30 Scan / Bulan"
+            desc = "30 Scan "
         ),
         Paket(
             id = 3,
             paket = "Gold",
             price = "40.000",
-            desc = "45 Scan / Bulan"
+            desc = "45 Scan "
         )
     )
 }

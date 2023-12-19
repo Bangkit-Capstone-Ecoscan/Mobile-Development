@@ -17,11 +17,23 @@ sealed class Screen (val route: String) {
 
     object Bookmark: Screen("bookmark")
 
-    object DetailBookmark: Screen("detailBookmark")
+    object FakeDetailBook: Screen("fakeDetailBook")
+
+    object DetailBookmark: Screen("DetailBookmark/{id}") {
+        fun createRoute(id: String) = "DetailBookmark/$id"
+    }
     object Setting: Screen("setting")
 
     object Detail: Screen("Detail/{id}"){
         fun createRoute(id: String) = "Detail/$id"
+    }
+
+    companion object {
+        val useBottomBar = listOf(
+            Home.route,
+            Scan.route,
+            Profile.route
+        )
     }
 
 
