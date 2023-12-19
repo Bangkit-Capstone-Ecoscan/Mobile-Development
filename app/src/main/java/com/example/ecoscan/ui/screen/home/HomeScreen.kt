@@ -7,8 +7,11 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -29,9 +32,11 @@ import com.example.ecoscan.data.remote.response.ArticleResponseItem
 import com.example.ecoscan.di.Injection
 import com.example.ecoscan.ui.ViewModelFactory
 import com.example.ecoscan.ui.common.UiState
+import com.example.ecoscan.ui.component.CardWelcome
 import com.example.ecoscan.ui.component.ListItems
 import com.example.ecoscan.ui.component.TopBarHome
 import com.example.ecoscan.ui.theme.EcoScanTheme
+import com.example.ecoscan.ui.theme.Gold
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -112,12 +117,20 @@ fun ScrollContent(
     modifier: Modifier = Modifier,
     navigateToDetail: (String) -> Unit,
 ) {
-
     LazyColumn(
-        modifier = modifier
-            .fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(vertical = 60.dp, horizontal = 0.dp),
     ) {
+        item {
+            CardWelcome(
+                username = "",
+                currentValue = 12,
+                maxValue = 20,
+                progressBackgroundColor = Gold,
+                progressIndicatorColor = Color.Black,
+                completedColor = Color.Red,
+            )
+        }
         items(article) { data ->
             data.apply {
                 Log.d("HomeScreen", "Data ${data.articleUrl}")
@@ -139,7 +152,19 @@ fun ScrollContent(
 @Preview(showBackground = true)
 @Composable
 fun PreviewHomeScreen() {
+    val sampleArticle = listOf(
+        ArticleResponseItem(
+            id = "1",
+            title = "Sample Title",
+            desc = listOf("Sample Description Line 1", "Sample Description Line 2"),
+            imgUrl = "https://example.com/sample-image.jpg",
+            author = "John Doe",
+            authorYear = "2023",
+            articleUrl = "https://example.com/sample-article"
+        ),
+        // Add more sample articles as needed
+    )
     EcoScanTheme {
-        HomeScreen(navigateToSubscribe = {}, navigateToSetting = {}, navigateToDetail = {})
+        ScrollContent(article = sampleArticle, navigateToDetail = {})
     }
 }
