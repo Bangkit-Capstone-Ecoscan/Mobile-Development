@@ -13,18 +13,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.QuestionMark
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -38,12 +37,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -54,12 +49,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
-import com.example.ecoscan.R
 import com.example.ecoscan.di.Injection
 import com.example.ecoscan.ui.ViewModelFactory
+import com.example.ecoscan.ui.component.AlertDialogPaket
 import com.example.ecoscan.ui.component.TopBarProfile
 import com.example.ecoscan.ui.theme.EcoScanTheme
-import com.example.ecoscan.ui.theme.PurpleGrey40
+import com.example.ecoscan.ui.theme.GraySubs
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -90,7 +85,8 @@ fun ProfileScreen(
                 image = "https://img.freepik.com/premium-vector/account-icon-user-icon-vector-graphics_292645-552.jpg",
                 username = user.email,
                 subscribe = "Bronze",
-                password = user.quota.toString()
+                quota = user.quota.toString(),
+                password = "**********"
             )
         }
     }
@@ -102,6 +98,7 @@ fun ProfileContent(
     image: String,
     username: String,
     subscribe: String,
+    quota: String,
     password: String,
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
@@ -111,11 +108,13 @@ fun ProfileContent(
 ) {
     val context = LocalContext.current as? Activity
     var showPassword by remember { mutableStateOf(false) }
-
+    var showDialog by remember {
+        mutableStateOf(false)
+    }
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(PurpleGrey40)
+            .background(GraySubs)
     ) {
         Column(
             modifier = Modifier
@@ -123,7 +122,7 @@ fun ProfileContent(
                 .weight(1f)
                 .fillMaxSize()
                 .padding(
-                    vertical = 90.dp,
+                    vertical = 80.dp,
                     horizontal = 24.dp
                 )
                 .background(
@@ -132,30 +131,37 @@ fun ProfileContent(
                 ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            AsyncImage(
-                model = image,
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .zIndex(1f)
-                    .clip(CircleShape)
-                    .size(250.dp)
-            )
-
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(
-                    bottom = 50.dp
+                    bottom = 20.dp
                 ),
-
-                ) {
+            ) {
+                AsyncImage(
+                    model = image,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .zIndex(0f)
+                        .clip(CircleShape)
+                        .size(250.dp)
+                )
                 Text(
                     text = username,
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.headlineSmall.copy(
-                        fontWeight = FontWeight.ExtraBold
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.ExtraBold,
                     ),
-                    modifier = modifier.padding(8.dp)
+                    modifier = modifier
+                        .padding(2.dp)
+                )
+                Text(
+                    text = "Kuota Scan\n ${quota}",
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.ExtraBold,
+                    ),
+                    modifier = modifier
+                        .padding(bottom = 8.dp)
                 )
                 Box(
                     modifier = Modifier
@@ -238,26 +244,6 @@ fun ProfileContent(
                             )
                         },
                         visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
-                        trailingIcon = {
-                            val (icon, iconColor) = if (showPassword) {
-                                Pair(
-                                    painterResource(id = R.drawable.eyepassword),
-                                    colorResource(id = R.color.black)
-                                )
-                            } else {
-                                Pair(
-                                    painterResource(id = R.drawable.eyepassword),
-                                    colorResource(id = R.color.black)
-                                )
-                            }
-                            IconButton(onClick = { showPassword = !showPassword }) {
-                                Icon(
-                                    icon,
-                                    contentDescription = "Visibility",
-                                    tint = iconColor
-                                )
-                            }
-                        },
                         placeholder = {
                             Text(
                                 text = "Masukan Password Anda ",
@@ -270,7 +256,7 @@ fun ProfileContent(
                         enabled = false
                     )
                 }
-                Spacer(modifier = Modifier.height(90.dp))
+                Spacer(modifier = Modifier.height(70.dp))
                 Box(
                     modifier = Modifier
                         .background(
@@ -278,9 +264,7 @@ fun ProfileContent(
                             shape = CircleShape
                         )
                         .clickable {
-                            viewModel.logoutSession()
-                            context?.isDestroyed
-                            context?.finish()
+                            showDialog = true
                         }
                         .padding(vertical = 8.dp, horizontal = 15.dp),
                 ) {
@@ -292,6 +276,19 @@ fun ProfileContent(
                             color = MaterialTheme.colorScheme.onPrimary
                         ),
                         modifier = Modifier.padding(vertical = 0.dp, horizontal = 14.dp)
+                    )
+                }
+                if (showDialog) {
+                    AlertDialogPaket(
+                        onDismissRequest = { showDialog = false },
+                        onConfirmation = {
+                            viewModel.logoutSession()
+                            context?.isDestroyed
+                            context?.finish()
+                        },
+                        dialogTitle = "Logout",
+                        dialogText = "Yakin Untuk Logout ?",
+                        icon = Icons.Default.Warning
                     )
                 }
             }
