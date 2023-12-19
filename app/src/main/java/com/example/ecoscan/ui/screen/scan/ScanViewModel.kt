@@ -7,6 +7,7 @@ import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.ecoscan.data.pref.DataResultScan
+import com.example.ecoscan.data.pref.UserIdData
 import com.example.ecoscan.data.pref.UserModel
 import com.example.ecoscan.data.remote.response.AuthResponse
 import com.example.ecoscan.data.remote.response.PredictResponse
@@ -59,10 +60,11 @@ class ScanViewModel (private val repository: EcoRepository):ViewModel() {
     fun getResult(): LiveData<DataResultScan> {
         return repository.getResult().asLiveData()
     }
-    fun getSession(): LiveData<UserModel> {
-        return repository.getSession().asLiveData()
-    }
 
-//    fun uploadImage(file: File) = repository.scanPredict(file)
+
+
+
+
+
 
 }
