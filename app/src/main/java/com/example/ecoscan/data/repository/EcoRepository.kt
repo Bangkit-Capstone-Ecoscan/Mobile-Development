@@ -5,6 +5,7 @@ import androidx.lifecycle.liveData
 import com.example.ecoscan.data.models.Paket
 import com.example.ecoscan.data.models.PaketDataSource.paket
 import com.example.ecoscan.data.pref.DataResultScan
+import com.example.ecoscan.data.pref.UserIdData
 import com.example.ecoscan.data.pref.UserModel
 import com.example.ecoscan.data.pref.UserPreference
 import com.example.ecoscan.data.remote.response.ArticleResponseItem
@@ -41,6 +42,14 @@ class EcoRepository private constructor(
 
     fun getResult():Flow<DataResultScan> {
         return userPreference.getResult()
+    }
+
+    suspend fun saveUserId(userIdData: UserIdData) {
+        userPreference.saveUserId(userIdData)
+    }
+
+    fun getUserId(): Flow<UserIdData> {
+        return userPreference.getUserId()
     }
 
     suspend fun logout() {
@@ -156,6 +165,9 @@ class EcoRepository private constructor(
             emit(UiState.Error(" Error ${e.message.toString()}"))
         }
     }
+
+
+
 
     // Show List Package
     fun getAllPaket(): Flow<List<Paket>> {

@@ -7,6 +7,7 @@ import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.ecoscan.data.pref.DataResultScan
+import com.example.ecoscan.data.pref.UserIdData
 import com.example.ecoscan.data.remote.response.DetailResultResponse
 import com.example.ecoscan.data.repository.EcoRepository
 import com.example.ecoscan.ui.common.UiState
@@ -27,6 +28,12 @@ class DetailBookmarkViewModel (private val repository: EcoRepository): ViewModel
             } finally {
 
             }
+        }
+    }
+
+    fun saveResult(userIdData: UserIdData) {
+        viewModelScope.launch {
+            repository.saveUserId(userIdData)
         }
     }
 

@@ -70,6 +70,21 @@ class UserPreference private constructor(private val dataStore: DataStore<Prefer
         }
     }
 
+    suspend fun saveUserId(userIdData: UserIdData) {
+        dataStore.edit {
+            it[userId] = userIdData.userId
+        }
+    }
+
+    fun getUserId(): Flow<UserIdData> {
+        return dataStore.data.map { user ->
+            UserIdData (
+                user[userId] ?: ""
+            )
+
+        }
+    }
+
     fun getThemeSetting(): Flow<Boolean> {
         return dataStore.data.map { preferences ->
             preferences[THEME_KEY] ?: false
@@ -96,7 +111,7 @@ class UserPreference private constructor(private val dataStore: DataStore<Prefer
         private val protein = stringPreferencesKey("protein")
         private val vitamin = stringPreferencesKey("vitamin")
         private val url = stringPreferencesKey("url")
-        private val urls = stringPreferencesKey("urls")
+        private val userId = stringPreferencesKey("userId")
 
 
         fun getInstance(dataStore: DataStore<Preferences>): UserPreference {
