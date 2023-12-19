@@ -1,10 +1,12 @@
 package com.example.ecoscan.data.remote.retrofit
 
 
-import androidx.annotation.RawRes
+import com.example.ecoscan.data.models.Paket
 import com.example.ecoscan.data.remote.response.ArticleResponseItem
 import com.example.ecoscan.data.remote.response.AuthResponse
 import com.example.ecoscan.data.remote.response.DetailResponse
+import com.example.ecoscan.data.remote.response.PaketResponse
+import androidx.annotation.RawRes
 import com.example.ecoscan.data.remote.response.DetailResultResponse
 import com.example.ecoscan.data.remote.response.GetResultResponse
 import com.example.ecoscan.data.remote.response.GetResultResponseItem
@@ -33,12 +35,12 @@ interface ApiService {
         @Field("firstName") fistName: String,
         @Field("lastName") lastName: String,
         @Field("password") password: String
-    ):AuthResponse
+    ): AuthResponse
 
 
     @FormUrlEncoded
     @POST("auth/login")
-    suspend fun login (
+    suspend fun login(
         @Field("username") username: String,
         @Field("password") password: String,
     ): AuthResponse
@@ -58,6 +60,13 @@ interface ApiService {
         @Part image: MultipartBody.Part
     ): PredictResponse
 
+    //    PATCH PAKET QUOTA
+    @FormUrlEncoded
+    @PATCH("/quota/add")
+    suspend fun paketQuota(
+        @Field("package") paket: String
+    ): PaketResponse
+  
     @Multipart
     @POST("/scan-result/upload")
     suspend fun storeImage(
