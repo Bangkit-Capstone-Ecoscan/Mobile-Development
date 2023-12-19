@@ -21,10 +21,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
 import com.example.ecoscan.R
 import com.example.ecoscan.ui.component.BottomBar
 import com.example.ecoscan.ui.navigation.Screen
 import com.example.ecoscan.ui.screen.bookmark.detail.DetailBookmarkScreen
+import com.example.ecoscan.ui.screen.bookmark.fakedetail.FakeDetailBookScreen
 import com.example.ecoscan.ui.screen.bookmark.main.BookmarkScreen
 import com.example.ecoscan.ui.screen.detail.DetailScreen
 import com.example.ecoscan.ui.screen.home.HomeScreen
@@ -46,12 +48,12 @@ fun MainScreenHolder(
 
     Scaffold(
         bottomBar = {
-            if (currentRoute != Screen.Subscribe.route) {
+            if (Screen.useBottomBar.contains(currentRoute)) {
                 BottomBar(navController = navController)
             }
         },
         floatingActionButton = {
-            if (currentRoute != Screen.Subscribe.route) {
+            if (Screen.useBottomBar.contains(currentRoute)) {
                 FloatingActionButton(
                     onClick = {
                         if (enabled) {
@@ -118,12 +120,7 @@ fun MainScreenHolder(
             composable(Screen.Scan.route) {
                 ScanScreen(
                     navigateToResult = {
-                        navController.popBackStack()
-                        navController.navigate(Screen.DetailBookmark.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-//                            restoreState = true
+                        navController.navigate(Screen.FakeDetailBook.route) {
                             launchSingleTop = true
                         }
                     }
@@ -132,12 +129,11 @@ fun MainScreenHolder(
 
             composable(Screen.Profile.route) {
                 ProfileScreen(
-                    navigateToBoorkmark = {navController.navigate(Screen.DetailBookmark.route) {
+                    navigateToBoorkmark = {navController.navigate(Screen.Bookmark.route) {
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
                         }
-//                        restoreState = true
-//                        launchSingleTop = true
+                        launchSingleTop = true
                     } }
                 )
             }
@@ -156,18 +152,36 @@ fun MainScreenHolder(
 
             composable(Screen.Bookmark.route) {
                 BookmarkScreen(
-                    backNavigation = { navController.navigateUp() }
+                    backNavigation = { navController.navigate(Screen.Profile.route) },
+
+                    navigateToDetail = { id->
+                        navController.navigate(Screen.DetailBookmark.createRoute(id)){
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+//                            restoreState = true
+                            launchSingleTop = true
+                        }
+                    }
                 )
             }
 
-            composable(Screen.DetailBookmark.route) {
-                DetailBookmarkScreen()
+            composable(Screen.FakeDetailBook.route) {
+                FakeDetailBookScreen()
+            }
+
+            composable(Screen.DetailBookmark.route) {dataId ->
+                val id = dataId.arguments?.getString("id") ?: ""
+                DetailBookmarkScreen(
+                    id = id
+                )
             }
 
             composable(Screen.Detail.route){itNv->
                 val id = itNv.arguments?.getString("id") ?: ""
                 DetailScreen(id = id)
             }
+
         }
     }
 }

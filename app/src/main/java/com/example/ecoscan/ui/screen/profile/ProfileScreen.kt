@@ -19,16 +19,18 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.QuestionMark
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -36,10 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -50,32 +49,48 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
-import com.example.ecoscan.R
+import com.example.ecoscan.di.Injection
 import com.example.ecoscan.ui.ViewModelFactory
+import com.example.ecoscan.ui.component.AlertDialogPaket
 import com.example.ecoscan.ui.component.TopBarProfile
 import com.example.ecoscan.ui.theme.EcoScanTheme
+import com.example.ecoscan.ui.theme.GraySubs
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
+
 fun ProfileScreen(
-    navigateToBoorkmark: () -> Unit
+    navigateToBoorkmark: () -> Unit,
+    context: Context = LocalContext.current,
+    viewModel: ProfileViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
+        factory = ViewModelFactory(Injection.provideRepository(context))
+    ),
 ) {
+    var showDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var showLoading by remember {
+        mutableStateOf(false)
+    }
     Scaffold(
-        topBar = { TopBarProfile(
-            navigateToBookmark = {navigateToBoorkmark()}
-        )
+        topBar = {
+            TopBarProfile(
+                navigateToBookmark = { navigateToBoorkmark() }
+            )
         }
     ) {
-        ProfileContent(
-            image = "https://imgx.sonora.id/crop/0x0:0x0/700x465/photo/2020/02/17/2398193539.png",
-            username = "EcoScanUser",
-            subscribe = "Langganan",
-            email = "EcoScan@gmail.com",
-            password = "TestPassword"
-        )
+        viewModel.getSession().observeAsState().value?.let { user ->
+            ProfileContent(
+                image = "https://img.freepik.com/premium-vector/account-icon-user-icon-vector-graphics_292645-552.jpg",
+                username = user.email,
+                subscribe = "Bronze",
+                quota = user.quota.toString(),
+                password = "**********"
+            )
+        }
     }
 }
-
 
 
 @Composable
@@ -83,7 +98,7 @@ fun ProfileContent(
     image: String,
     username: String,
     subscribe: String,
-    email: String,
+    quota: String,
     password: String,
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
@@ -93,47 +108,60 @@ fun ProfileContent(
 ) {
     val context = LocalContext.current as? Activity
     var showPassword by remember { mutableStateOf(false) }
-
-    Column(modifier = modifier.fillMaxSize()) {
+    var showDialog by remember {
+        mutableStateOf(false)
+    }
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(GraySubs)
+    ) {
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
                 .weight(1f)
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(
+                    vertical = 80.dp,
+                    horizontal = 24.dp
+                )
+                .background(
+                    Color.White,
+                    shape = RoundedCornerShape(20.dp)
+                ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .height(50.dp)
-            )
-            Box(
-                modifier = Modifier
-                    .size(250.dp) // Adjust the size as needed
-                    .clip(CircleShape)
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(
+                    bottom = 20.dp
+                ),
             ) {
                 AsyncImage(
                     model = image,
                     contentDescription = null,
-                    contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .fillMaxSize()
                         .zIndex(0f)
+                        .clip(CircleShape)
+                        .size(250.dp)
                 )
-            }
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(12.dp),
-
-                ) {
                 Text(
                     text = username,
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.headlineSmall.copy(
-                        fontWeight = FontWeight.ExtraBold
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.ExtraBold,
                     ),
-                    modifier = modifier.padding(8.dp)
+                    modifier = modifier
+                        .padding(2.dp)
+                )
+                Text(
+                    text = "Kuota Scan\n ${quota}",
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.ExtraBold,
+                    ),
+                    modifier = modifier
+                        .padding(bottom = 8.dp)
                 )
                 Box(
                     modifier = Modifier
@@ -162,7 +190,7 @@ fun ProfileContent(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     androidx.compose.material.OutlinedTextField(
-                        value = email,
+                        value = username,
                         onValueChange = {
                             //Do SomeThing
                         },
@@ -174,7 +202,7 @@ fun ProfileContent(
                             .height(50.dp),
                         leadingIcon = {
                             Icon(
-                                imageVector = Icons.Default.Email,
+                                imageVector = Icons.Default.Person,
                                 contentDescription = "emailIcon"
                             )
                         },
@@ -216,26 +244,6 @@ fun ProfileContent(
                             )
                         },
                         visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
-                        trailingIcon = {
-                            val (icon, iconColor) = if (showPassword) {
-                                Pair(
-                                    painterResource(id = R.drawable.eyepassword),
-                                    colorResource(id = R.color.black)
-                                )
-                            } else {
-                                Pair(
-                                    painterResource(id = R.drawable.eyepassword),
-                                    colorResource(id = R.color.black)
-                                )
-                            }
-                            IconButton(onClick = { showPassword = !showPassword }) {
-                                Icon(
-                                    icon,
-                                    contentDescription = "Visibility",
-                                    tint = iconColor
-                                )
-                            }
-                        },
                         placeholder = {
                             Text(
                                 text = "Masukan Password Anda ",
@@ -248,7 +256,7 @@ fun ProfileContent(
                         enabled = false
                     )
                 }
-                Spacer(modifier = Modifier.height(90.dp))
+                Spacer(modifier = Modifier.height(70.dp))
                 Box(
                     modifier = Modifier
                         .background(
@@ -256,9 +264,7 @@ fun ProfileContent(
                             shape = CircleShape
                         )
                         .clickable {
-                            viewModel.logoutSession()
-                            context?.isDestroyed
-                            context?.finish()
+                            showDialog = true
                         }
                         .padding(vertical = 8.dp, horizontal = 15.dp),
                 ) {
@@ -272,15 +278,30 @@ fun ProfileContent(
                         modifier = Modifier.padding(vertical = 0.dp, horizontal = 14.dp)
                     )
                 }
+                if (showDialog) {
+                    AlertDialogPaket(
+                        onDismissRequest = { showDialog = false },
+                        onConfirmation = {
+                            viewModel.logoutSession()
+                            context?.isDestroyed
+                            context?.finish()
+                        },
+                        dialogTitle = "Logout",
+                        dialogText = "Yakin Untuk Logout ?",
+                        icon = Icons.Default.Warning
+                    )
+                }
             }
         }
     }
 }
 
-//@Preview(showBackground = true, device = Devices.PIXEL_4)
-//@Composable
-//fun ProfileScreenPreview() {
-//    EcoScanTheme {
-//        ProfileScreen()
-//    }
-//}
+@Preview(showBackground = true, device = Devices.PIXEL_4)
+@Composable
+fun ProfileScreenPreview() {
+    EcoScanTheme {
+        ProfileScreen(
+            navigateToBoorkmark = {}
+        )
+    }
+}

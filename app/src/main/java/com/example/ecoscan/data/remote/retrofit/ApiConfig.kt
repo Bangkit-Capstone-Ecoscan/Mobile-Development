@@ -1,5 +1,6 @@
 package com.example.ecoscan.data.remote.retrofit
 
+import android.util.Log
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -16,7 +17,7 @@ class ApiConfig {
             val authInterceptor = Interceptor { chain ->
                 val req = chain.request()
                 val requestHeaders = req.newBuilder()
-                    .addHeader("Authorization", "Bearer $token")
+                    .addHeader("authorization", "Bearer $token")
                     .build()
                 chain.proceed(requestHeaders)
             }

@@ -7,12 +7,15 @@ import com.example.ecoscan.EcoScanViewModel
 import com.example.ecoscan.data.repository.EcoRepository
 import com.example.ecoscan.di.Injection
 import com.example.ecoscan.ui.screen.bookmark.detail.DetailBookmarkViewModel
+import com.example.ecoscan.ui.screen.bookmark.fakedetail.FakeDetailBookViewModel
+import com.example.ecoscan.ui.screen.bookmark.main.BookmarkViewModel
 import com.example.ecoscan.ui.screen.detail.DetailViewModel
 import com.example.ecoscan.ui.screen.home.HomeViewModel
 import com.example.ecoscan.ui.screen.login.LoginViewModel
 import com.example.ecoscan.ui.screen.profile.ProfileViewModel
 import com.example.ecoscan.ui.screen.register.RegisterViewModel
 import com.example.ecoscan.ui.screen.scan.ScanViewModel
+import com.example.ecoscan.ui.screen.subscribe.SubscribeViewModel
 
 class ViewModelFactory (private val repository: EcoRepository): ViewModelProvider.NewInstanceFactory() {
 
@@ -42,6 +45,15 @@ class ViewModelFactory (private val repository: EcoRepository): ViewModelProvide
             }
             modelClass.isAssignableFrom(DetailBookmarkViewModel::class.java) -> {
                 DetailBookmarkViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(SubscribeViewModel::class.java) -> {
+                SubscribeViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(BookmarkViewModel::class.java) -> {
+                BookmarkViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(FakeDetailBookViewModel::class.java) -> {
+                FakeDetailBookViewModel(repository) as T
             }
             else -> {
                 throw IllegalArgumentException("Unknown ViewModel Class " + modelClass.name)

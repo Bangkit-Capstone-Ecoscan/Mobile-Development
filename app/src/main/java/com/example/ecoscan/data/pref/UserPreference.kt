@@ -1,11 +1,11 @@
 package com.example.ecoscan.data.pref
 
 import android.content.Context
-import android.net.Uri
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
@@ -19,6 +19,7 @@ class UserPreference private constructor(private val dataStore: DataStore<Prefer
             preferences[USER_NAME] = user.email
             preferences[TOKEN_KEY] = user.token
             preferences[IS_LOGIN_KEY] = true
+            preferences[QUOTA] = user.quota
         }
     }
 
@@ -27,6 +28,7 @@ class UserPreference private constructor(private val dataStore: DataStore<Prefer
             UserModel(
                 preferences[USER_NAME] ?: "",
                 preferences[TOKEN_KEY] ?: "",
+                preferences[QUOTA] ?: 0,
                 preferences[IS_LOGIN_KEY] ?: false
             )
         }
@@ -42,7 +44,7 @@ class UserPreference private constructor(private val dataStore: DataStore<Prefer
 
     suspend fun saveResult(result: DataResultScan) {
         dataStore.edit {
-            result.url
+            it[url] = result.url
             it[calcium] = result.calcium
             it[carbon] = result.carbon
             it[emission] = result.emission
@@ -68,6 +70,21 @@ class UserPreference private constructor(private val dataStore: DataStore<Prefer
         }
     }
 
+    suspend fun saveUserId(userIdData: UserIdData) {
+        dataStore.edit {
+            it[userId] = userIdData.userId
+        }
+    }
+
+    fun getUserId(): Flow<UserIdData> {
+        return dataStore.data.map { user ->
+            UserIdData (
+                user[userId] ?: ""
+            )
+
+        }
+    }
+
     fun getThemeSetting(): Flow<Boolean> {
         return dataStore.data.map { preferences ->
             preferences[THEME_KEY] ?: false
@@ -84,6 +101,7 @@ class UserPreference private constructor(private val dataStore: DataStore<Prefer
         private val USER_NAME = stringPreferencesKey("email")
         private val TOKEN_KEY = stringPreferencesKey("token")
         private val IS_LOGIN_KEY = booleanPreferencesKey("isLogin")
+        private val QUOTA = intPreferencesKey("quota")
         private val THEME_KEY = booleanPreferencesKey("theme_setting")
         private val calcium = stringPreferencesKey("calcium")
         private val carbon = stringPreferencesKey("carbon")
@@ -93,6 +111,7 @@ class UserPreference private constructor(private val dataStore: DataStore<Prefer
         private val protein = stringPreferencesKey("protein")
         private val vitamin = stringPreferencesKey("vitamin")
         private val url = stringPreferencesKey("url")
+        private val userId = stringPreferencesKey("userId")
 
 
         fun getInstance(dataStore: DataStore<Preferences>): UserPreference {

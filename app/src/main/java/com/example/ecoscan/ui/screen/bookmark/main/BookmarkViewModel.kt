@@ -1,4 +1,4 @@
-package com.example.ecoscan.ui.screen.bookmark.detail
+package com.example.ecoscan.ui.screen.bookmark.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -6,24 +6,23 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.ecoscan.data.pref.DataResultScan
 import com.example.ecoscan.data.pref.UserIdData
-import com.example.ecoscan.data.remote.response.DetailResultResponse
+import com.example.ecoscan.data.pref.UserModel
+import com.example.ecoscan.data.remote.response.GetResultResponseItem
 import com.example.ecoscan.data.repository.EcoRepository
 import com.example.ecoscan.ui.common.UiState
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class DetailBookmarkViewModel (private val repository: EcoRepository): ViewModel() {
+class BookmarkViewModel (private val repository: EcoRepository): ViewModel() {
 
-    private val _getDetailById = MutableLiveData<UiState<DetailResultResponse>>()
-    val getDetailById:LiveData<UiState<DetailResultResponse>> = _getDetailById
-    fun detailResultById(id: String) {
+    private val _ListResults = MutableLiveData<UiState<List<GetResultResponseItem>>>()
+    val ListResults : LiveData<UiState<List<GetResultResponseItem>>> get()  = _ListResults
+    fun getResult() {
         viewModelScope.launch {
             try {
-                repository.getDetailScanById(id).asFlow().collect {
-                    _getDetailById.value = it
+                repository.getResultScan().asFlow().collect {
+                    _ListResults.value = it
                 }
             } finally {
 
@@ -31,10 +30,10 @@ class DetailBookmarkViewModel (private val repository: EcoRepository): ViewModel
         }
     }
 
+
     fun saveResult(userIdData: UserIdData) {
         viewModelScope.launch {
             repository.saveUserId(userIdData)
         }
     }
-
 }
