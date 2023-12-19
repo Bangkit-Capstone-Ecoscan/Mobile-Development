@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -37,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -57,6 +59,7 @@ import com.example.ecoscan.di.Injection
 import com.example.ecoscan.ui.ViewModelFactory
 import com.example.ecoscan.ui.component.TopBarProfile
 import com.example.ecoscan.ui.theme.EcoScanTheme
+import com.example.ecoscan.ui.theme.PurpleGrey40
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -76,12 +79,13 @@ fun ProfileScreen(
         mutableStateOf(false)
     }
     Scaffold(
-        topBar = { TopBarProfile(
-            navigateToBookmark = {navigateToBoorkmark()}
-        )
+        topBar = {
+            TopBarProfile(
+                navigateToBookmark = { navigateToBoorkmark() }
+            )
         }
     ) {
-        viewModel.getSession().observeAsState().value?.let {user->
+        viewModel.getSession().observeAsState().value?.let { user ->
             ProfileContent(
                 image = "https://img.freepik.com/premium-vector/account-icon-user-icon-vector-graphics_292645-552.jpg",
                 username = user.email,
@@ -91,7 +95,6 @@ fun ProfileScreen(
         }
     }
 }
-
 
 
 @Composable
@@ -109,37 +112,41 @@ fun ProfileContent(
     val context = LocalContext.current as? Activity
     var showPassword by remember { mutableStateOf(false) }
 
-    Column(modifier = modifier.fillMaxSize()) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(PurpleGrey40)
+    ) {
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
                 .weight(1f)
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(
+                    vertical = 90.dp,
+                    horizontal = 24.dp
+                )
+                .background(
+                    Color.White,
+                    shape = RoundedCornerShape(20.dp)
+                ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(
+            AsyncImage(
+                model = image,
+                contentDescription = null,
                 modifier = Modifier
                     .fillMaxSize()
-                    .height(50.dp)
-            )
-            Box(
-                modifier = Modifier
-                    .size(250.dp) // Adjust the size as needed
+                    .zIndex(1f)
                     .clip(CircleShape)
-            ) {
-                AsyncImage(
-                    model = image,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .zIndex(0f)
-                )
-            }
+                    .size(250.dp)
+            )
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(12.dp),
+                modifier = Modifier.padding(
+                    bottom = 50.dp
+                ),
 
                 ) {
                 Text(
