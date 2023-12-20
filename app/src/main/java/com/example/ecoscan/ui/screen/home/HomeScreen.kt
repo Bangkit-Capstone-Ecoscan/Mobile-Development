@@ -67,6 +67,8 @@ fun HomeScreen(
         }
     ) {
 //        val getArticle by viewModel.getArticle.observeAsState()
+        val quota by viewModel.getQuota().observeAsState()
+        val userData by viewModel.getUserData().observeAsState()
         viewModel.getArticle.observeAsState(initial = UiState.Loading).value.let { uiState ->
             when (uiState) {
                 is UiState.Loading -> {
@@ -88,9 +90,12 @@ fun HomeScreen(
                     Log.d("HomeScreen", "Success state detected")
                     Log.d("HomeScreen", "${uiState.data}")
 
+
                     ScrollContent(
                         article = uiState.data,
                         navigateToDetail = navigateToDetail,
+                        username = userData?.email ?: "",
+                        currentQuota = userData?.quota ?: 0,
                     )
                 }
 
@@ -116,6 +121,8 @@ fun ScrollContent(
     article: List<ArticleResponseItem>,
     modifier: Modifier = Modifier,
     navigateToDetail: (String) -> Unit,
+    username: String,
+    currentQuota: Int,
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
@@ -123,12 +130,8 @@ fun ScrollContent(
     ) {
         item {
             CardWelcome(
-                username = "",
-                currentValue = 12,
-                maxValue = 20,
-                progressBackgroundColor = Gold,
-                progressIndicatorColor = Color.Black,
-                completedColor = Color.Red,
+                username = username,
+                currentValue = currentQuota,
             )
         }
         items(article) { data ->
@@ -165,6 +168,6 @@ fun PreviewHomeScreen() {
         // Add more sample articles as needed
     )
     EcoScanTheme {
-        ScrollContent(article = sampleArticle, navigateToDetail = {})
+        ScrollContent(article = sampleArticle, navigateToDetail = {}, username = "", currentQuota = 1)
     }
 }

@@ -123,6 +123,11 @@ fun MainScreenHolder(
                         navController.navigate(Screen.FakeDetailBook.route) {
                             launchSingleTop = true
                         }
+                    },
+                    navigateToSubsScreen = {
+                        navController.navigate(Screen.Subscribe.route) {
+                            launchSingleTop = true
+                        }
                     }
                 )
             }
@@ -140,7 +145,12 @@ fun MainScreenHolder(
 
             composable(Screen.Subscribe.route) {
                 SubscribeScreen(
-                    backNavigation = { navController.navigateUp() }
+                    backNavigation = { navController.navigate(Screen.Home.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                    } },
                 )
             }
 
@@ -167,13 +177,20 @@ fun MainScreenHolder(
             }
 
             composable(Screen.FakeDetailBook.route) {
-                FakeDetailBookScreen()
+                FakeDetailBookScreen(
+                    navigateBack = { navController.navigate(Screen.Bookmark.route){
+                        launchSingleTop = true
+                    } }
+                )
             }
 
             composable(Screen.DetailBookmark.route) {dataId ->
                 val id = dataId.arguments?.getString("id") ?: ""
                 DetailBookmarkScreen(
-                    id = id
+                    id = id,
+                    navigateBack = { navController.navigate(Screen.Bookmark.route) {
+                        launchSingleTop = true
+                    } }
                 )
             }
 
