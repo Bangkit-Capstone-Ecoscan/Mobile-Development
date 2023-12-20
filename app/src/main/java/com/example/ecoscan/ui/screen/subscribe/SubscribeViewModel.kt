@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.example.ecoscan.data.models.Paket
+import com.example.ecoscan.data.pref.GetQuota
+import com.example.ecoscan.data.pref.UserModel
 import com.example.ecoscan.data.remote.response.AuthResponse
 import com.example.ecoscan.data.remote.response.PaketResponse
 import com.example.ecoscan.data.repository.EcoRepository
@@ -34,6 +36,18 @@ class SubscribeViewModel(private val repository: EcoRepository): ViewModel(){
                 .collect { orderPaket ->
                     _uiState.value = UiState.Success(orderPaket)
                 }
+        }
+    }
+
+    fun saveQuota(quota: GetQuota) {
+        viewModelScope.launch {
+            repository.saveQuota(quota)
+        }
+    }
+
+    fun saveSessions(userModel: UserModel) {
+        viewModelScope.launch {
+            repository.saveSession(userModel)
         }
     }
 

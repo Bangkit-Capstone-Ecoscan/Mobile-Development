@@ -5,6 +5,8 @@ import androidx.lifecycle.liveData
 import com.example.ecoscan.data.models.Paket
 import com.example.ecoscan.data.models.PaketDataSource.paket
 import com.example.ecoscan.data.pref.DataResultScan
+import com.example.ecoscan.data.pref.GetImageUrl
+import com.example.ecoscan.data.pref.GetQuota
 import com.example.ecoscan.data.pref.UserIdData
 import com.example.ecoscan.data.pref.UserModel
 import com.example.ecoscan.data.pref.UserPreference
@@ -13,9 +15,7 @@ import com.example.ecoscan.data.remote.response.DetailResponse
 import com.example.ecoscan.data.remote.response.DetailResultResponse
 import com.example.ecoscan.data.remote.response.GetResultResponseItem
 import com.example.ecoscan.data.remote.retrofit.ApiService
-import com.example.ecoscan.data.remote.retrofit.ApiService2
 import com.example.ecoscan.ui.common.UiState
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import okhttp3.MediaType.Companion.toMediaType
@@ -25,7 +25,6 @@ import java.io.File
 
 class EcoRepository private constructor(
     private val apiService: ApiService,
-    private val apiService2: ApiService2,
     private val userPreference: UserPreference,
 ) {
 
@@ -45,8 +44,24 @@ class EcoRepository private constructor(
         return userPreference.getResult()
     }
 
+    suspend fun saveImageUrl(imageUrl: GetImageUrl) {
+        userPreference.saveImageUrl(imageUrl)
+    }
+
+    fun getImageUrl(): Flow<GetImageUrl> {
+        return userPreference.getImageUrl()
+    }
+
     suspend fun saveUserId(userIdData: UserIdData) {
         userPreference.saveUserId(userIdData)
+    }
+
+    suspend fun saveQuota(quota: GetQuota) {
+        userPreference.saveQuota(quota)
+    }
+
+    fun getQuota(): Flow<GetQuota> {
+        return userPreference.getQuota()
     }
 
     fun getUserId(): Flow<UserIdData> {
@@ -56,6 +71,7 @@ class EcoRepository private constructor(
     suspend fun logout() {
         userPreference.logout()
     }
+
 
 
 
@@ -105,14 +121,10 @@ class EcoRepository private constructor(
         }
     }
 
-    fun scanPredict(image: File) = liveData {
+    fun scanPredict(ImageUrl: String) = liveData {
         emit(UiState.Loading)
-        val requestFile = image.asRequestBody("image/jpg".toMediaType())
-        val file = MultipartBody.Part.createFormData(
-            "image",image.name,requestFile
-        )
         try {
-            val succesResponse = apiService2.scanPredict(file)
+            val succesResponse = apiService.scanPredict(ImageUrl)
             emit(UiState.Success(succesResponse))
         } catch (e: Exception) {
             emit(UiState.Error("Error: ${e.message.toString()}"))
@@ -186,8 +198,7 @@ class EcoRepository private constructor(
     companion object {
         fun getInstance(
             apiService: ApiService,
-            apiService2: ApiService2,
             userPreference: UserPreference,
-        ): EcoRepository = EcoRepository(apiService,apiService2, userPreference)
+        ): EcoRepository = EcoRepository(apiService, userPreference)
     }
 }
