@@ -4,7 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.ecoscan.data.pref.GetQuota
+import com.example.ecoscan.data.pref.UserModel
 import com.example.ecoscan.data.remote.response.ArticleResponse
 import com.example.ecoscan.data.remote.response.ArticleResponseItem
 import com.example.ecoscan.data.repository.EcoRepository
@@ -27,5 +30,13 @@ class HomeViewModel(private val repository: EcoRepository): ViewModel(){
             }
 
         }
+    }
+
+    fun getQuota(): LiveData<GetQuota> {
+        return repository.getQuota().asLiveData()
+    }
+
+    fun getUserData(): LiveData<UserModel> {
+        return repository.getSession().asLiveData()
     }
 }

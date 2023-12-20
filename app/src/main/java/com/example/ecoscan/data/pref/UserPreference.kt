@@ -85,6 +85,34 @@ class UserPreference private constructor(private val dataStore: DataStore<Prefer
         }
     }
 
+    suspend fun saveImageUrl(getImageUrl: GetImageUrl) {
+        dataStore.edit {
+            it[urls] = getImageUrl.imageUrl
+        }
+    }
+
+    fun getImageUrl(): Flow<GetImageUrl> {
+        return dataStore.data.map { imageUrl ->
+            GetImageUrl(
+                imageUrl[urls] ?: ""
+            )
+        }
+    }
+
+    suspend fun saveQuota(quota: GetQuota) {
+        dataStore.edit {
+            it[paket] = quota.quota
+        }
+    }
+
+    fun getQuota(): Flow<GetQuota> {
+        return dataStore.data.map {
+            GetQuota (
+                it[paket] ?: 5
+            )
+        }
+    }
+
     fun getThemeSetting(): Flow<Boolean> {
         return dataStore.data.map { preferences ->
             preferences[THEME_KEY] ?: false
@@ -112,7 +140,8 @@ class UserPreference private constructor(private val dataStore: DataStore<Prefer
         private val vitamin = stringPreferencesKey("vitamin")
         private val url = stringPreferencesKey("url")
         private val userId = stringPreferencesKey("userId")
-
+        private val urls = stringPreferencesKey("urls")
+        private val paket = intPreferencesKey("paket")
 
         fun getInstance(dataStore: DataStore<Preferences>): UserPreference {
             return UserPreference(dataStore)

@@ -11,6 +11,7 @@ import com.example.ecoscan.data.remote.response.DetailResultResponse
 import com.example.ecoscan.data.remote.response.GetResultResponse
 import com.example.ecoscan.data.remote.response.GetResultResponseItem
 import com.example.ecoscan.data.remote.response.PredictResponse
+import com.example.ecoscan.data.remote.response.ScanResultResponse
 import com.example.ecoscan.data.remote.response.StoreImageResponse
 import com.example.ecoscan.data.remote.response.StoreResultResponse
 import okhttp3.MultipartBody
@@ -54,11 +55,11 @@ interface ApiService {
     ): DetailResponse
 
 
-    @Multipart
-    @POST("predict/")
+    @FormUrlEncoded
+    @PATCH("/predict")
     suspend fun scanPredict(
-        @Part image: MultipartBody.Part
-    ): PredictResponse
+        @Field("image_url") imageUrl: String
+    ): ScanResultResponse
 
     //    PATCH PAKET QUOTA
     @FormUrlEncoded
@@ -72,11 +73,11 @@ interface ApiService {
     suspend fun storeImage(
         @Part file: MultipartBody.Part
     ): StoreImageResponse
-    @FormUrlEncoded
 
+
+    @FormUrlEncoded
     @PATCH("/store-result")
     suspend fun storeResult(
-//        @Header("authorization") token: String,
         @Field("calcium") calcium: String,
         @Field("carbohydrates") carbohydrates: String,
         @Field("emission") emissions: String,

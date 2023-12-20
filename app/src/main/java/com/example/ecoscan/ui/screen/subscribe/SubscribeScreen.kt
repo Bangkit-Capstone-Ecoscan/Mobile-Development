@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ecoscan.data.models.Paket
+import com.example.ecoscan.data.pref.GetQuota
 import com.example.ecoscan.data.pref.UserModel
 import com.example.ecoscan.di.Injection
 import com.example.ecoscan.ui.ViewModelFactory
@@ -123,6 +124,25 @@ fun SubscribeScreen(
                     Toast.makeText(context, "An error occurred", Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+        when (val quotaPackets = paket) {
+            is UiState.Success -> {
+                val quota = quotaPackets.data
+                viewModel.saveSessions(
+                    UserModel(
+                        quota.user.username,
+                        quota.token,
+                        quota.user.quota
+                    )
+                )
+                viewModel.saveQuota(
+                    GetQuota(
+                        quota.user.quota
+                    )
+                )
+            }
+
+            else -> {}
         }
     }
 }

@@ -59,7 +59,7 @@ fun AnimatedProgressIndicator(
         val animateFloat = remember { Animatable(0f) }
         LaunchedEffect(animateFloat) {
             animateFloat.animateTo(
-                targetValue = currentValue / maxValue.toFloat(),
+                targetValue = currentValue.toFloat()/ maxValue.toFloat(),
                 animationSpec = tween(durationMillis = 2000, easing = FastOutSlowInEasing)
             )
         }
