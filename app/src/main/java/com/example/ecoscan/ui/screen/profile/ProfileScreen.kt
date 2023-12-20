@@ -54,7 +54,11 @@ import com.example.ecoscan.ui.ViewModelFactory
 import com.example.ecoscan.ui.component.AlertDialogPaket
 import com.example.ecoscan.ui.component.TopBarProfile
 import com.example.ecoscan.ui.theme.EcoScanTheme
+import com.example.ecoscan.ui.theme.Gold
+import com.example.ecoscan.ui.theme.GoldSubs
 import com.example.ecoscan.ui.theme.GraySubs
+import com.example.ecoscan.ui.theme.bronze
+import com.example.ecoscan.ui.theme.silver
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -84,7 +88,6 @@ fun ProfileScreen(
             ProfileContent(
                 image = "https://img.freepik.com/premium-vector/account-icon-user-icon-vector-graphics_292645-552.jpg",
                 username = user.email,
-                subscribe = "Bronze",
                 quota = user.quota.toString(),
                 password = "**********"
             )
@@ -97,7 +100,6 @@ fun ProfileScreen(
 fun ProfileContent(
     image: String,
     username: String,
-    subscribe: String,
     quota: String,
     password: String,
     modifier: Modifier = Modifier,
@@ -163,24 +165,87 @@ fun ProfileContent(
                     modifier = modifier
                         .padding(bottom = 8.dp)
                 )
-                Box(
-                    modifier = Modifier
-                        .background(
-                            MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.8f),
-                            shape = CircleShape
+
+                if (quota.toInt() < 5) {
+                    Box(
+                        modifier = Modifier
+                            .background(
+                                MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.8f),
+                                shape = CircleShape
+                            )
+                            .clickable { }
+                            .padding(vertical = 8.dp, horizontal = 15.dp)
+                    ) {
+                        Text(
+                            text = "Langganan",
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                fontWeight = FontWeight.ExtraBold,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            ),
+                            modifier = Modifier.padding(vertical = 0.dp, horizontal = 10.dp)
                         )
-                        .clickable { }
-                        .padding(vertical = 8.dp, horizontal = 15.dp)
-                ) {
-                    Text(
-                        text = subscribe,
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            fontWeight = FontWeight.ExtraBold,
-                            color = MaterialTheme.colorScheme.onPrimary
-                        ),
-                        modifier = Modifier.padding(vertical = 0.dp, horizontal = 10.dp)
-                    )
+                    }
+                } else if (quota.toInt() <= 15 ) {
+                    Box(
+                        modifier = Modifier
+                            .background(
+                                color = bronze,
+                                shape = CircleShape
+                            )
+                            .clickable { }
+                            .padding(vertical = 8.dp, horizontal = 15.dp)
+                    ) {
+                        Text(
+                            text = "Bronze",
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                fontWeight = FontWeight.ExtraBold,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            ),
+                            modifier = Modifier.padding(vertical = 0.dp, horizontal = 10.dp)
+                        )
+                    }
+                } else if (quota.toInt() <= 30 ) {
+                    Box(
+                        modifier = Modifier
+                            .background(
+                                color = silver,
+                                shape = CircleShape
+                            )
+                            .clickable { }
+                            .padding(vertical = 8.dp, horizontal = 15.dp)
+                    ) {
+                        Text(
+                            text = "Silver",
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                fontWeight = FontWeight.ExtraBold,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            ),
+                            modifier = Modifier.padding(vertical = 0.dp, horizontal = 10.dp)
+                        )
+                    }
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .background(
+                                color = GoldSubs,
+                                shape = CircleShape
+                            )
+                            .clickable { }
+                            .padding(vertical = 8.dp, horizontal = 15.dp)
+                    ) {
+                        Text(
+                            text = "Gold",
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                fontWeight = FontWeight.ExtraBold,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            ),
+                            modifier = Modifier.padding(vertical = 0.dp, horizontal = 10.dp)
+                        )
+                    }
                 }
 //              TextField Email
                 Row(

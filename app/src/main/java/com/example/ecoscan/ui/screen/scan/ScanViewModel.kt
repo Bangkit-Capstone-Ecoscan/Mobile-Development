@@ -7,10 +7,12 @@ import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.ecoscan.data.pref.DataResultScan
+import com.example.ecoscan.data.pref.GetImageUrl
 import com.example.ecoscan.data.pref.UserIdData
 import com.example.ecoscan.data.pref.UserModel
 import com.example.ecoscan.data.remote.response.AuthResponse
 import com.example.ecoscan.data.remote.response.PredictResponse
+import com.example.ecoscan.data.remote.response.ScanResultResponse
 import com.example.ecoscan.data.remote.response.StoreImageResponse
 import com.example.ecoscan.data.remote.response.StoreResultResponse
 import com.example.ecoscan.data.repository.EcoRepository
@@ -21,11 +23,11 @@ import java.io.File
 
 class ScanViewModel (private val repository: EcoRepository):ViewModel() {
 
-    private val _upload = MutableLiveData<UiState<PredictResponse>>()
-    val upload: LiveData<UiState<PredictResponse>> = _upload
-    fun uploadImage(file:File) {
+    private val _upload = MutableLiveData<UiState<ScanResultResponse>>()
+    val upload: LiveData<UiState<ScanResultResponse>> = _upload
+    fun scanImage(imageUrl: String) {
         viewModelScope.launch {
-            repository.scanPredict(file).asFlow().collect {
+            repository.scanPredict(imageUrl).asFlow().collect {
                 _upload.value = it
             }
         }
@@ -61,10 +63,24 @@ class ScanViewModel (private val repository: EcoRepository):ViewModel() {
         return repository.getResult().asLiveData()
     }
 
+    fun saveSession(user: UserModel) {
+        viewModelScope.launch {
+            repository.saveSession(user)
+        }
+    }
 
+    fun getQuota(): LiveData<UserModel> {
+        return repository.getSession().asLiveData()
+    }
 
+    fun saveImageUrl(imageUrl: GetImageUrl) {
+        viewModelScope.launch {
+            repository.saveImageUrl(imageUrl)
+        }
+    }
 
-
-
+    fun getImageUrl(): LiveData<GetImageUrl> {
+        return repository.getImageUrl().asLiveData()
+    }
 
 }

@@ -13,6 +13,9 @@ val Pink40 = Color(0xFF7D5260)
 val Orange = Color(0xFFFD8D14)
 val Gold = Color(0xFFEBB02D)
 
+val GoldSubs = Color(0xFFD3AF55)
+val silver = Color(0XFFA7A6A6)
+val bronze = Color(0xFFC67B30)
 val Green = Color(0xFF1E752B)
 
 val RedSubs = Color(0xFFC70039)

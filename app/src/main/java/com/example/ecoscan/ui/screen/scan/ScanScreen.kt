@@ -62,10 +62,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
 import coil.compose.AsyncImage
 import com.example.ecoscan.R
 import com.example.ecoscan.data.pref.DataResultScan
+import com.example.ecoscan.data.pref.GetImageUrl
+import com.example.ecoscan.data.pref.UserModel
 import com.example.ecoscan.data.utils.getImageUri
 import com.example.ecoscan.data.utils.reduceFileImage
 import com.example.ecoscan.data.utils.uriToFile
@@ -79,12 +82,14 @@ import com.example.ecoscan.ui.theme.EcoScanTheme
 @Composable
 fun ScanScreen(
     navigateToResult: () -> Unit,
+    navigateToSubsScreen: () -> Unit
 ) {
     Scaffold(
         topBar = { TopBarScan() }
     ) {
         ScanScreenContent(
-            navigateToResult = {navigateToResult()}
+            navigateToResult = { navigateToResult() },
+            navigateToSubsScreen = { navigateToSubsScreen() }
         )
     }
 }
@@ -93,6 +98,7 @@ fun ScanScreen(
 fun ScanScreenContent(
     modifier: Modifier = Modifier,
     navigateToResult: () -> Unit,
+    navigateToSubsScreen: () -> Unit,
     context: Context = LocalContext.current,
     viewModel: ScanViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
         factory = ViewModelFactory(Injection.provideRepository(context))
@@ -104,10 +110,25 @@ fun ScanScreenContent(
         mutableStateOf(false)
     }
 
+    var showDialogToDetail by remember {
+        mutableStateOf(false)
+    }
+
     var showLoading by remember {
         mutableStateOf(false)
     }
 
+    var showLoadingScan by remember {
+        mutableStateOf(false)
+    }
+
+    var showAlertSubs by remember {
+        mutableStateOf(false)
+    }
+
+    var showLoadingDialogToDetail by remember {
+        mutableStateOf(false)
+    }
 
     var currentImageUri: Uri? = null
 
@@ -115,52 +136,77 @@ fun ScanScreenContent(
         mutableStateOf<Uri>(Uri.EMPTY)
     }
 
+
+    val getQuota by viewModel.getQuota().observeAsState()
+    val imageUrl by viewModel.getImageUrl().observeAsState()
     val storeResult by viewModel.storeResults.observeAsState()
     val storeImages by viewModel.storeImages.observeAsState()
     val getResults by viewModel.getResult().observeAsState()
     val upload by viewModel.upload.observeAsState()
 
 
-    when (val uistate = upload) {
+    when (val uistate = storeImages) {
         is UiState.Loading -> {
             showLoading = true
         }
 
         is UiState.Success -> {
+            showDialog = true
+//            Log.d("checkUrl", "ScanScreenContent: ${uistate.data.url}")
+            viewModel.saveImageUrl(
+                GetImageUrl(
+                    uistate.data.url
+                )
+            )
+            when (val scan = upload) {
+                is UiState.Loading -> {
+                    showLoadingScan = true
+                }
 
-            showLoading = true
-            when (val storeImage = storeImages) {
                 is UiState.Success -> {
-                    showDialog = true
-                    uistate.data.let {
+                    showLoadingScan = false
+                    showDialogToDetail = true
+                    showLoading = true
+                    scan.data.let {
                         when (storeResult) {
+                            is UiState.Loading -> {
+                                showLoadingDialogToDetail = true
+                            }
+
                             is UiState.Success -> {
                                 navigateToResult()
                             }
 
-                            else -> {}
+                            else -> {
+
+                            }
                         }
                         viewModel.saveResult(
-                            DataResultScan (
-                                storeImage.data.url,
-                                it.calcium.toString(),
-                                it.carbohydrates.toString(),
-                                it.emission.toString(),
-                                it.fat.toString(),
-                                it.foodName.toString(),
-                                it.protein.toString(),
-                                it.vitamins.toString(),
+                            DataResultScan(
+                                uistate.data.url,
+                                it.modelResponse.calcium,
+                                it.modelResponse.carbohydrates,
+                                it.modelResponse.emission,
+                                it.modelResponse.fat,
+                                it.modelResponse.foodName,
+                                it.modelResponse.protein,
+                                it.modelResponse.vitamins,
                             )
                         )
-
-
-
-
+                        viewModel.saveSession(
+                            UserModel(
+                                it.user.username,
+                                it.token,
+                                it.user.quota
+                            )
+                        )
+//                        Log.d("checkToken", "ScanScreenContent: ${it.token}")
                     }
-                    Log.d("Check Url", "ScanScreenContent: ${storeImage.data.url}")
+
                 }
 
-                else -> {}
+                else -> {
+                }
             }
 
         }
@@ -314,11 +360,7 @@ fun ScanScreenContent(
                 }
 
             }
-
-
-
-            if (showDialog) {
-
+            if (showDialogToDetail) {
                 androidx.compose.material3.AlertDialog(
                     onDismissRequest = {
                         showDialog = false
@@ -335,32 +377,81 @@ fun ScanScreenContent(
                     confirmButton = {
                         Button(
                             onClick = {
-                                getResults?.apply {
-                                    viewModel.storeResult(
-                                        calcium,
-                                        carbon,
-                                        emission,
-                                        fat,
-                                        foodName,
-                                        protein,
-                                        vitamin,
-                                        url
-                                    )
-                                    Log.d("checkUrl", "ScanScreenContent: $url")
+                                getResults.let {
+                                    if (it != null) {
+                                        viewModel.storeResult(
+                                            it.calcium.toString(),
+                                            it.carbon.toString(),
+                                            it.emission.toString(),
+                                            it.fat.toString(),
+                                            it.foodName.toString(),
+                                            it.protein.toString(),
+                                            it.vitamin.toString(),
+                                            it.url.toString()
+                                        )
+                                    }
                                 }
-
                             },
                             shape = RoundedCornerShape(20.dp),
                             colors = ButtonDefaults.buttonColors(
                                 MaterialTheme.colorScheme.primary
                             )
                         ) {
-                            Text(
-                                text = "Yes",
-                                color = Color.Black
-                            )
+                            if (showLoadingDialogToDetail) {
+                                androidx.compose.material.CircularProgressIndicator(
+                                    modifier = Modifier.size(24.dp),
+                                    color = Color.Gray
+                                )
+                            } else {
+                                Text(
+                                    text = "Ok",
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 20.sp,
+                                )
+                            }
                         }
                     }
+                )
+            }
+
+            if (showDialog) {
+                androidx.compose.material3.AlertDialog(
+                    onDismissRequest = {
+                        showDialog = false
+                    },
+                    title = {
+                        Text(text = "Scan This Food ?")
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                imageUrl?.let { viewModel.scanImage(it.imageUrl) }
+                            },
+                            shape = RoundedCornerShape(20.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                MaterialTheme.colorScheme.primary
+                            )
+                        ) {
+                            if (showLoadingScan) {
+                                androidx.compose.material.CircularProgressIndicator(
+                                    modifier = Modifier.size(24.dp),
+                                    color = Color.Gray
+                                )
+                            } else {
+                                Text(
+                                    text = "Scan",
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 20.sp,
+                                )
+                            }
+                        }
+                    },
+                    properties = DialogProperties(
+                        dismissOnClickOutside = true,
+                        dismissOnBackPress = true
+                    )
                 )
             }
 
@@ -411,6 +502,69 @@ fun ScanScreenContent(
                 }
             }
 
+            if (showAlertSubs) {
+                androidx.compose.material3.AlertDialog(
+                    onDismissRequest = {
+                        showAlertSubs = false
+                    },
+                    icon = {
+                        Icon(
+                        imageVector = Icons.Default.CheckCircle,
+                        contentDescription = "checkCircle"
+                    )
+                    },
+                    title = {
+                        Text(text = "Your Quota Has Run Out")
+                    },
+                    text = {
+                           Text(text = "Buy Subscription")
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                navigateToSubsScreen()
+                            },
+                            shape = RoundedCornerShape(20.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                MaterialTheme.colorScheme.primary
+                            )
+                        ) {
+                            Text(
+                                text = "Buy",
+                                 color = Color.White,
+                                fontWeight = FontWeight.Normal,
+                                fontSize = 20.sp,
+                            )
+                        }
+                    },
+                    dismissButton = {
+                      Button(
+                          onClick = {
+                              showAlertSubs = false
+                          },
+                          shape = RoundedCornerShape(20.dp),
+                          colors = ButtonDefaults.buttonColors(
+                              MaterialTheme.colorScheme.primary
+                          )
+                      ) {
+                          Text(
+                              text = "No",
+                              color = Color.White,
+                              fontWeight = FontWeight.Normal,
+                              fontSize = 20.sp
+
+                          )
+                      }
+                    },
+                    properties = DialogProperties(
+                        dismissOnClickOutside = showAlertSubs,
+                        dismissOnBackPress = showAlertSubs
+                    )
+                )
+            }
+
+//            val imageFile =
+//                context.uriToFile(capturedImageUri, context).reduceFileImage()
 
             Row(
                 modifier = Modifier
@@ -421,11 +575,13 @@ fun ScanScreenContent(
             ) {
                 Button(
                     onClick = {
-                        val imageFile =
-                            context.uriToFile(capturedImageUri, context).reduceFileImage()
-                        viewModel.uploadImage(imageFile)
-                        viewModel.storeImage(imageFile)
-//
+                        if (getQuota?.quota!! < 1) {
+                            showAlertSubs = true
+                        } else {
+                            val imageFile =
+                                context.uriToFile(capturedImageUri, context).reduceFileImage()
+                            viewModel.storeImage(imageFile)
+                        }
                     },
                     modifier = Modifier
                         .width(150.dp),
@@ -459,7 +615,8 @@ fun ScanScreenContent(
 fun ScanScreenPreview() {
     EcoScanTheme {
         ScanScreenContent(
-            navigateToResult = {}
+            navigateToResult = {},
+            navigateToSubsScreen = {}
         )
     }
 }
