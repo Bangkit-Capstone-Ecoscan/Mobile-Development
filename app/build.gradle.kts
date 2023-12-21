@@ -18,7 +18,7 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-        buildConfigField("String" , "BASE_URL" , "\"https://ecoscan-api.vercel.app\"")
+        buildConfigField("String" , "BASE_URL" , "\"http://34.138.0.114:8080\"")
     }
 
     buildTypes {
