@@ -155,7 +155,7 @@ fun SubscribeContent(
     onItemClick: (Paket) -> Unit
 ) {
     Text(
-        text = "Rekomendasi Paket",
+        text = "Package Recommendations",
         modifier = modifier
             .padding(
                 horizontal = 12.dp,

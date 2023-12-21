@@ -2,6 +2,7 @@ package com.example.ecoscan.ui.screen.bookmark.fakedetail
 
 import android.annotation.SuppressLint
 import android.content.Context
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -135,21 +136,21 @@ fun DetailBookmarkContent(
                         .padding(top = 20.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.iconcarbo),
+                    Image(
+                        painter = painterResource(id = R.drawable.carb),
                         contentDescription = null,
                         modifier = Modifier
                             .size(40.dp)
                     )
 
-                    Icon(
+                    Image(
                         painter = painterResource(id = R.drawable.iconcalcium),
                         contentDescription = null,
                         modifier = Modifier
                             .size(40.dp)
                     )
 
-                    Icon(
+                    Image(
                         painter = painterResource(id = R.drawable.iconvitamins),
                         contentDescription = null,
                         modifier = Modifier

@@ -157,7 +157,7 @@ fun ProfileContent(
                         .padding(2.dp)
                 )
                 Text(
-                    text = "Kuota Scan\n ${quota}",
+                    text = "Scan Quota\n ${quota}",
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontWeight = FontWeight.ExtraBold,
