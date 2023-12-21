@@ -296,10 +296,10 @@ fun LoginScreenLayout(
                                 showDialog = false
                             },
                             title = {
-                                Text(text = "Login Berhasil")
+                                Text(text = "Login Successful")
                             },
                             text = {
-                                Text(text = "Silahkan Ke Halaman Selanjutnya")
+                                Text(text = "Please Go to the Next Page")
                             },
                             icon = {
                                 Icon(

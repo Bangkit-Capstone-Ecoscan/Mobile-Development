@@ -249,10 +249,10 @@ fun RegisterScreenLayout(
                                 showDialog = false
                             },
                             title = {
-                                Text(text = "Login Berhasil")
+                                Text(text = "Register Successful")
                             },
                             text = {
-                                Text(text = "Silahkan Kembali Login ")
+                                Text(text = "Please Login Again")
                             },
                             icon = { Icon(imageVector = Icons.Default.CheckCircle, contentDescription = "checkCircle")},
                             confirmButton = {
@@ -265,7 +265,8 @@ fun RegisterScreenLayout(
                                         MaterialTheme.colorScheme.primary
                                     )
                                 ) {
-                                    Text(text = "Yes")
+                                    Text(text = "Yes",
+                                        color = Color.Black)
                                 }
                             }
                         )

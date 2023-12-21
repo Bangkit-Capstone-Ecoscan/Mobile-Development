@@ -38,6 +38,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.NewReleases
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -371,7 +372,7 @@ fun ScanScreenContent(
                     icon = {
                         Icon(
                             imageVector = Icons.Default.CheckCircle,
-                            contentDescription = "checkCircle"
+                            contentDescription = "checkCircle",
                         )
                     },
                     confirmButton = {
@@ -509,8 +510,9 @@ fun ScanScreenContent(
                     },
                     icon = {
                         Icon(
-                        imageVector = Icons.Default.CheckCircle,
-                        contentDescription = "checkCircle"
+                        imageVector = Icons.Default.NewReleases,
+                        contentDescription = "checkCircle",
+                        tint = Color.Red
                     )
                     },
                     title = {
@@ -533,7 +535,7 @@ fun ScanScreenContent(
                                 text = "Buy",
                                  color = Color.White,
                                 fontWeight = FontWeight.Normal,
-                                fontSize = 20.sp,
+                                fontSize = 14.sp,
                             )
                         }
                     },
@@ -544,14 +546,14 @@ fun ScanScreenContent(
                           },
                           shape = RoundedCornerShape(20.dp),
                           colors = ButtonDefaults.buttonColors(
-                              MaterialTheme.colorScheme.primary
+                              Color.Transparent
                           )
                       ) {
                           Text(
                               text = "No",
-                              color = Color.White,
+                              color = Color.Black,
                               fontWeight = FontWeight.Normal,
-                              fontSize = 20.sp
+                              fontSize = 16.sp
 
                           )
                       }
@@ -563,8 +565,7 @@ fun ScanScreenContent(
                 )
             }
 
-//            val imageFile =
-//                context.uriToFile(capturedImageUri, context).reduceFileImage()
+
 
             Row(
                 modifier = Modifier
