@@ -3,6 +3,7 @@ package com.example.ecoscan.ui.screen.bookmark.detail
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -21,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -134,10 +138,8 @@ fun DetailBookmarkContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(),
-
             shape = RoundedCornerShape(topEnd = 100.dp),
             elevation = 20.dp
-
         ) {
             Column {
                 Text(
@@ -162,21 +164,21 @@ fun DetailBookmarkContent(
                         .padding(top = 20.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.iconcarbo),
+                    Image(
+                        painter = painterResource(id = R.drawable.carb),
                         contentDescription = null,
                         modifier = Modifier
                             .size(40.dp)
                     )
 
-                    Icon(
+                    Image(
                         painter = painterResource(id = R.drawable.iconcalcium),
                         contentDescription = null,
                         modifier = Modifier
                             .size(40.dp)
-                    )
+                        )
 
-                    Icon(
+                    Image(
                         painter = painterResource(id = R.drawable.iconvitamins),
                         contentDescription = null,
                         modifier = Modifier

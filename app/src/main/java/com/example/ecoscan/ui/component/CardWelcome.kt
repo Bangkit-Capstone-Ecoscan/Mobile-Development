@@ -53,8 +53,10 @@ fun CardWelcome(
         ) {
             Text(
                 buildAnnotatedString {
-                    append("Selamat Datang ")
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.W900, fontSize = 20.sp, color = Color(0xFFEBB02D))
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, fontSize = 23.sp)) {
+                        append("Hi ")
+                    }
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp, color = Color(0xFFEBB02D))
                     ) {
                         append(username)
                     }
@@ -68,7 +70,7 @@ fun CardWelcome(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Text(
-                    text = "Kuota Scan Anda : ",
+                    text = "Your Scan Quota : ",
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontWeight = FontWeight.ExtraBold
@@ -105,11 +107,11 @@ fun CardWelcome(
 
             Text(
                 buildAnnotatedString {
-                    append("Mari Ketahui Berita Mengenai")
+                    append("Let's find out news about")
                     withStyle(style = SpanStyle(fontWeight = FontWeight.W900)) {
-                        append(" Emisi Carbon ")
+                        append(" Carbon Emissions ")
                     }
-                    append("Pada Artikel Dibawah")
+                    append("in the article below")
                 }
             )
 

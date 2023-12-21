@@ -58,80 +58,12 @@ fun SettingsContent() {
             fontWeight = FontWeight.ExtraBold
         ),
     )
-//    Pengaturan Tema
-    androidx.compose.material.Card(
-        shape = MaterialTheme.shapes.small,
-        modifier = Modifier
-            .padding(vertical = 110.dp, horizontal = 10.dp)
-            .fillMaxWidth()
-            .shadow(
-                10.dp,
-                RoundedCornerShape(8.dp)
-            ),
-        onClick = {}
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .size(width = 0.dp, height = 80.dp)
-                .padding(horizontal = 5.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Column {
-                Text(
-                    text = "Tema",
-                    modifier = Modifier
-                        .padding(vertical = 8.dp, horizontal = 10.dp),
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-            SwitchMinimal()
-        }
 
-    }
-//   Pengaturan Bahasa
-    androidx.compose.material.Card(
-        shape = MaterialTheme.shapes.small,
-        modifier = Modifier
-            .padding(vertical = 210.dp, horizontal = 10.dp)
-            .fillMaxWidth()
-            .shadow(
-                10.dp,
-                RoundedCornerShape(8.dp)
-            ),
-        onClick = {}
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .size(width = 0.dp, height = 80.dp)
-                .padding(horizontal = 5.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Column {
-                Text(
-                    text = "Bahasa",
-                    modifier = Modifier
-                        .padding(vertical = 8.dp, horizontal = 10.dp),
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-            Icon(
-                painter = painterResource(R.drawable.baseline_language_24),
-                contentDescription = "Localized description",
-                tint = Gold,
-                modifier = Modifier
-                    .padding(horizontal = 8.dp)
-            )
-        }
-    }
 //    Pengaturan Versi Aplikasi
     androidx.compose.material.Card(
         shape = MaterialTheme.shapes.small,
         modifier = Modifier
-            .padding(vertical = 310.dp, horizontal = 10.dp)
+            .padding(top = 100.dp, start = 8.dp, end = 8.dp)
             .fillMaxWidth()
             .shadow(
                 10.dp,
